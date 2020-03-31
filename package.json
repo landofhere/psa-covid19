@@ -8,7 +8,8 @@
   "workspaces": {
     "packages": [
       "libs/*",
-      "apps/*"
+      "apps/*",
+      "sharedLib/*"
     ],
     "nohoist": [
       "**/rollup-plugin-svelte",
@@ -30,7 +31,8 @@
     "fix-packages": "yarn monofix && yarn lint:fix && yarn eslint:fix",
     "commit": "git add . && git cz",
     "release": "standard-version",
-    "imageVer": "export COMMIT=`git rev-parse --short HEAD` && sed -E -i'' \"s/(.*_generate:).*/\\1$COMMIT/\" 'docker-compose.covidapi.yml'"
+    "imageVer": "export COMMIT=`git rev-parse --short HEAD` && sed -E -i'' \"s/(.*_generate:).*/\\1$COMMIT/\" 'docker-compose.covidapi.yml'",
+    "submod:update": "git -C ./sharedLib/COVID-19 submodule update --init"
   },
   "commitlint": {
     "extends": [
