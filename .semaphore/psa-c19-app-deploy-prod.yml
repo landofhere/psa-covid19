@@ -1,17 +1,17 @@
 version: v1.0
-name: Deploy Stage Covid
+name: Deploy Production PSA:C19
 blocks:
-  - name: Deploy Covid Stage to Netlify
+  - name: Deploy PSA:C19 to Netlify
     task:
       secrets:
         - name: netlify-auth-covid
       jobs:
-        - name: Deploy Website
+        - name: Deploy Production PSA:C19 App
           commands:
             - nvm use 10
             - yarn global add netlify-cli
             - cache restore monorepo-covid-$SEMAPHORE_GIT_BRANCH-$(checksum package.json)
-            - netlify deploy --dir=apps/covid/__sapper__/export
+            - netlify deploy --dir=apps/covid/__sapper__/export --prod
 agent:
   machine:
     type: e1-standard-2

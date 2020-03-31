@@ -1,5 +1,5 @@
 version: v1.0
-name: Studiobear Monorepo CI
+name: LOH PSA:C19 CI
 agent:
   machine:
     type: e1-standard-2
@@ -26,7 +26,7 @@ blocks:
             - yarn check-packages && yarn test
             - cache store monorepo-ci-$SEMAPHORE_GIT_BRANCH-$(checksum package.json) .
 promotions:
-  - name: Build Studiobear Site
-    pipeline_file: studiobear-site-build.yml
+  - name: Build LOH PSA:C19
+    pipeline_file: psa-c19-app-build.yml
     auto_promote:
       when: result = 'passed'
