@@ -1,0 +1,18 @@
+version: v1.0
+name: Deploy Stage Covid
+blocks:
+  - name: Deploy Covid Stage to Netlify
+    task:
+      secrets:
+        - name: netlify-auth-covid
+      jobs:
+        - name: Deploy Website
+          commands:
+            - nvm use 10
+            - yarn global add netlify-cli
+            - cache restore monorepo-covid-$SEMAPHORE_GIT_BRANCH-$(checksum package.json)
+            - netlify deploy --dir=apps/covid/__sapper__/export
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804

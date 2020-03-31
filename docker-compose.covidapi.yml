@@ -1,0 +1,20 @@
+version: '3'
+services:
+  generate:
+    image: covid-api_generate:${COMMIT}
+    build:
+      context: .
+      dockerfile: ./Dockerfile.CovidAPI
+    container_name: covidapi-generate
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./apps/covid-api/public:/app/apps/covid-api/public
+    working_dir: /app
+    restart: always
+    command: yarn workspace covid-api start
+    network_mode: webproxy
+networks:
+  default:
+    external:
+      name: webproxy

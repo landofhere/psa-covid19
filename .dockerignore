@@ -1,0 +1,9 @@
+apps/covid
+apps/list-baby
+apps/studiobear-site
+libs
+CODE-OF-CONDUCT.md
+CHANGELOG.md
+LICENSE
+README.md
+svelte.config.js
