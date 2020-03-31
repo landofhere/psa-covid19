@@ -1,11 +1,11 @@
 version: v1.0
-name: Build Studiobear Sites
+name: Build PSA:C19 app
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Build Sites
+  - name: Build App
     skip:
       when: branch != 'master' AND branch != 'develop'
     task:
@@ -23,10 +23,10 @@ blocks:
             - cache store monorepo-covid-$SEMAPHORE_GIT_BRANCH-$(checksum package.json) apps/covid/__sapper__/export
 promotions:
   - name: Deploy Production Covid
-    pipeline_file: studiobear-covid-deploy-prod.yml
+    pipeline_file: psa-c19-app-deploy-prod.yml
     auto_promote:
       when: result = 'passed' and branch = 'master'
   - name: Deploy Stage Covid
-    pipeline_file: studiobear-covid-deploy-stage.yml
+    pipeline_file: psa-c19-app-deploy-stage.yml
     auto_promote:
       when: result = 'passed' and branch = 'develop'
