@@ -8,7 +8,8 @@
   "workspaces": {
     "packages": [
       "libs/*",
-      "apps/*"
+      "apps/*",
+      "sharedLib/*"
     ],
     "nohoist": [
       "**/rollup-plugin-svelte",
