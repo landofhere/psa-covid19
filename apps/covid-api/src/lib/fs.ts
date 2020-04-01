@@ -1,10 +1,11 @@
-import fs from 'fs'
+import * as fs from 'fs'
 const dataPath = '../../public/sample.json'
+
 export const readFile = (
   callback,
-  returnJson = true,
-  filePath = dataPath,
-  encoding = 'utf8',
+  returnJson,
+  filePath,
+  encoding,
 ) => {
   fs.readFile(filePath, encoding, (err, data) => {
     if (err) {

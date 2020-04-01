@@ -1,4 +1,5 @@
 require('dotenv').config()
+require("@babel/register")({extensions: ['.js', '.ts']})
 const CronJob = require('cron').CronJob
 import {
   getUS_CA_County,
@@ -8,7 +9,6 @@ import {
   parseUS_CA_County_Indv,
   ftpFile,
 } from './lib'
-import { resolve } from 'path'
 
 const dataPath = './public/covid19_US_CA_County.json'
 const generateUS_CA_County = async () => {
@@ -29,20 +29,22 @@ const generateUS_CA_County_NoTime = async () => {
   })
 }
 
+let date: Date = new Date()
 const job = new CronJob('0 */15 * * * *', function() {
-  let d = Date(Date.now())
   generateUS_CA_County()
-  console.log('US_CA_County data generated at ' + d.toString())
+  console.log('US_CA_County data generated at ' + date.toString())
 })
 
 const job2 = new CronJob('0 */15 * * * *', function() {
-  let d = Date(Date.now())
   generateUS_CA_County_NoTime()
-  console.log('US_CA_County_NoTime data generated at ' + d.toString())
+  console.log('US_CA_County_NoTime data generated at ' + date.toString())
 })
 
-job.start()
-job2.start()
-// generateUS_CA_County()
-// generateUS_CA_County_NoTime()
-// generateUS_CA_County_Indv()
+if(process.env.NODE_ENV === 'production') {
+  job.start()
+  job2.start()
+} else {
+  generateUS_CA_County()
+  generateUS_CA_County_NoTime()
+}
+
