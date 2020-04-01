@@ -4,7 +4,7 @@
   "description": "Scripts for manipulating covid-19 data",
   "main": "src/index",
   "scripts": {
-    "dev": "NODE_ENV=development yarn type-watch && yarn watch",
+    "dev": "NODE_ENV=development yarn type-watch & yarn watch",
     "watch": "babel-watch src --out-dir dist --extensions '.ts,.js' --watch",
     "start": "NODE_ENV=production node ./dist/src/index.js",
     "type-watch": "tsc-watch  -p tsconfig.json --noEmit",

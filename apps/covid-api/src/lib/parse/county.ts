@@ -1,4 +1,4 @@
-import { objDateToArray, internalizeName } from './index'
+import { objDateToArray, internalizeName, calcChange } from './index'
 
 interface DefaultOpts {
   numberfy?: boolean
@@ -24,8 +24,10 @@ const parseC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => 
       let dateItems = []
       let category: string | Category = { total: '', time: [] }
 
+      dateItems = await objDateToArray(item, opts.numberfy)
+      let itemChange = await calcChange(dateItems, [{'day': 1},{'week': 7}])
+
       if (opts.time) {
-        dateItems = await objDateToArray(item, opts.numberfy)
         category.total = opts.numberfy ? +item.TOTALS : item.TOTALS
         category.time = dateItems
       } else {
@@ -49,6 +51,8 @@ const parseC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => 
     return combined
   })
 }
+
+
 export const calcC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => {
   const parseData = await parseC19CACountyStats(d, region, {
     ...defaultOpts,

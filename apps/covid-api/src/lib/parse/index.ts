@@ -45,3 +45,15 @@ export const objDateToArray = async (obj: ObjDateArray, numberfy: boolean = fals
   }
   return dateArray
 }
+
+export const calcChange = (d: any[], spans: any[]): any => {
+  let change: object = {}
+  for (let period in spans){
+    let changeSpan = spans[period]
+    for( let i=0; i < changeSpan; i++ ){
+      let tempValue = d[i]
+      console.log(tempValue)
+      return change = {[period]: 0}
+    } 
+  }
+}
