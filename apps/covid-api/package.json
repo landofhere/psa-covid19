@@ -4,14 +4,13 @@
   "description": "Scripts for manipulating covid-19 data",
   "main": "src/index",
   "scripts": {
-    "dev": "NODE_ENV=development babel-watch src --out-dir dist --extensions '.ts,.js' --watch",
-    "start": "NODE_ENV=production node ./dist/index.js",
-    "generate": "yarn build && NODE_ENV=production node ./dist/index.js",
-    "build": "yarn clean && yarn transpile",
-    "transpile": "babel ./src --out-dir ./dist --copy-files --extensions '.ts,.js'",
+    "dev": "NODE_ENV=development yarn type-watch && yarn watch",
+    "watch": "babel-watch src --out-dir dist --extensions '.ts,.js' --watch",
+    "start": "NODE_ENV=production node ./dist/src/index.js",
+    "type-watch": "tsc-watch  -p tsconfig.json --noEmit",
     "type-check": "tsc  -p tsconfig.json --noEmit",
-    "type-build": "yarn clean && tsc -p tsconfig.json",
-    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo"
+    "build": "yarn clean && tsc -p tsconfig.json",
+    "clean": "rm -rf ./dist"
   },
   "author": "Barry Low <barry@studiobear.co>",
   "license": "MIT",
@@ -28,9 +27,11 @@
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-typescript": "^7.9.0",
     "@babel/register": "^7.9.0",
+    "@types/ftps": "^1.1.0",
     "@types/node": "^13.9.8",
     "babel-watch": "^7.0.0",
     "prettier": "1.19.1",
+    "tsc-watch": "^4.2.3",
     "typescript": "^3.8.3"
   },
   "babel": {

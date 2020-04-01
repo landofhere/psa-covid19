@@ -1,13 +1,16 @@
 {
   "extends": "../../tsconfig.base.json",
   "exclude": ["node_modules", "dist", "public", "**/*.test.*"],
-  "include": ["src"],
+  "include": ["src", "environment.ts"],
   "compilerOptions": {
     "resolveJsonModule": true,
     "lib": ["esnext"],
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "../covid-api",
     "baseUrl": ".",
-    "types": ["node"]
+    "paths": {
+      "*": ["../*"]
+    },
+    "types": ["node", "ftps"]
   }
 }
