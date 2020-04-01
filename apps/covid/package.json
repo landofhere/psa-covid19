@@ -20,9 +20,9 @@
     "lint:fix": "prettier --write 'src/**/*.{html,js,svelte}'",
     "jest": "jest src",
     "jest:watch": "yarn jest --watch src",
-    "cy:run": "cypress run",
+    "cy:run": "start-server-and-test 'http-server -c-1 --silent' 3030 'cypress run",
     "cy:open": "cypress open",
-    "test": "run-p --race jest cy:run",
+    "test:disabled": "run-p --race jest cy:run",
     "kill": "kill $(lsof -ti:3001,3000,3002)"
   },
   "dependencies": {
@@ -81,6 +81,7 @@
     "rollup-plugin-terser": "^5.2.0",
     "sapper": "^0.27.10",
     "sort-objects-array": "^1.7.1",
+    "start-server-and-test": "^1.10.11",
     "svelte": "^3.20.1",
     "svelte-image": "^0.1.9",
     "svelte-jester": "^1.0.3",

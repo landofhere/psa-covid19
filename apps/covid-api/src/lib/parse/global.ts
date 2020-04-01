@@ -1,12 +1,13 @@
-export const calcC19Stats = d => {
-  let combined = {}
+import { fatalityRate, recoveryRate } from './index'
+export const calcC19Stats = (d:any) => {
+  let combined: any = {}
   let total_deaths = 0
   let total_confirmed = 0
   let total_active = 0
   let total_recovered = 0
   let last_updated = 0
 
-  d.map(item => {
+  d.map((item:any) => {
     item = item['attributes']
     var build_item = {
       Confirmed: item.Confirmed,

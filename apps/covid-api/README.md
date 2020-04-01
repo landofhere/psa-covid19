@@ -16,7 +16,7 @@ job2.start()
 ```
 [TODO] Conditional check based on NODE_ENV , mebs.
 
-Then run ` yarn workspace covid-api dev` for immediate satisfaciton.
+Then run `yarn app dev` for immediate satisfaciton. 
 
 Then remember to re/un-comment everything before submitting PR. :innocent: 
 

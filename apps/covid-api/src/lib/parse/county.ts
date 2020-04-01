@@ -1,17 +1,28 @@
 import { objDateToArray, internalizeName } from './index'
 
-const defaultOpts = {
+interface DefaultOpts {
+  numberfy?: boolean
+  time?: boolean
+}
+
+interface Category {
+  total: string | number
+  time: any[]
+}
+
+const defaultOpts:DefaultOpts = {
   numberfy: false,
   time: true,
 }
-const parseC19CACountyStats = async (d, region, opts) => {
-  let combined = {}
+
+const parseC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => {
+  let combined: any = {}
   return Promise.all(
-    d.map(async item => {
+    d.map(async (item: any) => {
       let itemData = {}
       let itemCategory = {}
       let dateItems = []
-      let category = { total: '', time: [] }
+      let category: string | Category = { total: '', time: [] }
 
       if (opts.time) {
         dateItems = await objDateToArray(item, opts.numberfy)
@@ -38,7 +49,7 @@ const parseC19CACountyStats = async (d, region, opts) => {
     return combined
   })
 }
-export const calcC19CACountyStats = async (d, region, opts) => {
+export const calcC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => {
   const parseData = await parseC19CACountyStats(d, region, {
     ...defaultOpts,
     ...opts,
@@ -51,20 +62,28 @@ export const calcC19CACountyStats = async (d, region, opts) => {
   return parseData
 }
 
-export const calcC19CACountyStatsV2 = async (d, region, opts) => {
+interface ICACountyStatsV2{
+  updated?: string
+  data?: any
+  [key: string]: any
+}
+
+type CalcC19CACountyStatsV2 = (d:any, region:string, opts:DefaultOpts) => Promise<ICACountyStatsV2>
+
+export const calcC19CACountyStatsV2: CalcC19CACountyStatsV2 = async (d, region, opts) => {
   const parseData = await parseC19CACountyStats(d, region, {
     ...defaultOpts,
     ...opts,
   })
-    .then(res => {
+    .then((res: any) => {
       let tmpUpdated = res.updated
       delete res.updated
       let data = internalizeName(res)
       return { updated: tmpUpdated, data }
     })
-    .catch(err => {
+    .catch((err: any) => {
       console.log('calcStats err: ', err)
-      return 'ERROR!'
+      return {error: 'ERROR!'}
     })
   return parseData
 }
