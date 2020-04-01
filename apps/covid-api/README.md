@@ -3,6 +3,23 @@ The COVID API is a supporting backend server to remove the load of fetching, par
 ~~It is run in docker to take advantage of a [Docker container proxy + Letsencrypt SSL](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion) on a VM.~~ Now that the static server is remote, SSL isn't needed. Still run using docker-compose as a regular node app using [forever](https://www.npmjs.com/package/forever).
 
 
+### Dev Notes
+
+In production, functions that parse, write, and ftp files are run every 15 minutes by a NodeJS [cron](https://www.npmjs.com/package/cron) library. Obviously this should be disabled during dev.
+
+My hi-tech solution. In `./src/index.js`:
+```js
+job.start()  # <--- comment jobs out
+job2.start()
+// generateUS_CA_County() # <--- uncomment functions
+// generateUS_CA_County_NoTime()
+```
+[TODO] Conditional check based on NODE_ENV , mebs.
+
+Then run ` yarn workspace covid-api dev` for immediate satisfaciton.
+
+Then remember to re/un-comment everything before submitting PR. :innocent: 
+
 ### Production notes
 To launch container, from repo root dir:
 ```sh
