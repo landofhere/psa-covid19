@@ -248,8 +248,6 @@
   updated={last_updated} />
 
 <TableSubRegional
-  {regionData}
   regionName={region}
   countyName={county}
-  loading={!countryDataLoaded && !regionDataLoaded}
   {theme} />
