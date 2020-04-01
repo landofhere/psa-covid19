@@ -247,7 +247,4 @@
   countryName={countryLong}
   updated={last_updated} />
 
-<TableSubRegional
-  regionName={region}
-  countyName={county}
-  {theme} />
+<TableSubRegional regionName={region} countyName={county} {theme} />

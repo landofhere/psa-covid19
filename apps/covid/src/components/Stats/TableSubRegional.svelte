@@ -114,12 +114,12 @@
 
   $: sorted = ''
   $: colSorted = 'active'
-  
+
   const API_URL = process.env.API_URL
   const API_CA_COUNTY_FILE = process.env.API_CA_COUNTY_FILE
   const CA_COUNTY_URL_V2 = process.env.CA_COUNTY_URL_V2
   const CACountyURL = `${API_URL}${API_CA_COUNTY_FILE}${CA_COUNTY_URL_V2}`
-  
+
   export let regionName
   export let countyName
 
@@ -169,7 +169,9 @@
   onMount(async function getData() {
     const resp = await fetch(CACountyURL)
     subRegionData = await resp.json()
-    let regionTotals = subRegionData.data.filter(reg => reg.name === regionUpper)
+    let regionTotals = subRegionData.data.filter(
+      reg => reg.name === regionUpper,
+    )
     total_confirmed = regionTotals[0].cases
     total_active = regionTotals[0].cases - regionTotals[0].deaths
     total_recovered = 0
