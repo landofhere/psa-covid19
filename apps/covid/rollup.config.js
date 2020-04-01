@@ -64,7 +64,6 @@ export default {
         'process.env.GEOCODING_API_KEY': dev
           ? JSON.stringify(process.env.GOOGLE_GEOCODING_API_TEST)
           : JSON.stringify(process.env.GOOGLE_GEOCODING_API),
-        'process.env.CA_COUNTY_URL': JSON.stringify(process.env.CA_COUNTY_URL),
         'process.env.CA_COUNTY_URL_V2': JSON.stringify(
           process.env.CA_COUNTY_URL_V2,
         ),

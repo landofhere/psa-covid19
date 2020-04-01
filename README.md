@@ -1,17 +1,21 @@
 # Land of Here PSA: COVID 19 Monorepo
+![PSA: C19 Semaphore CI](https://studiobear.semaphoreci.com/badges/psa-covid19/branches/master.svg) ![Discord](https://img.shields.io/discord/691848117066137631?labelColor=5cafcf&label=Discord%20Chat&style=social&logo=discord)
 
 This is a monorepo for the _Land of Here_ **PSA: COVID-19** web app and api. Have a look around!
 
+Main packages location in the `./apps` dir:
+
+- **covid**: The main PSA: COVID-19 webapp built using Svelte and a in-development design specification library [designspek](https://github.com/Studiobear/designspek)
+- **covid-api**: Using "API" loosely, this NodeJS app pulls COVID-19 data form multiple sources and parses it into specific json files for use with the PSA app. The json files are built and ftp'd to a static file server on a cron schedule (every 15 min currently).
+
+Note: This repo is developed in *nix environments (Linux, BSD, Mac OSX). 
+
+For questions and support, join the [Land of Here Discord Chat](https://discord.gg/HkN8UAr)
+
 ---
 
-## ShareLib: git Submodules
-
-This repo uses [git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) to pull in data from the John Hopkins University [CSSE COVID-19](https://github.com/CSSEGISandData/COVID-19) and the [New York Times covid-19-data](https://github.com/nytimes/covid-19-data) repos.
-
-To init and update the submodules:
-```
-yarn submod:update
-```
+## Contributing
+Contributions are most welcome! Please first read the CODE OF CONDUCT and then CONTRIBUTING for more details.
 
 ## License
 

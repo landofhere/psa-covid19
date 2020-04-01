@@ -1,4 +1,9 @@
 # COVID-19 Informational App
+![PSA: C19 Semaphore CI](https://studiobear.semaphoreci.com/badges/psa-covid19/branches/master.svg) ![Discord](https://img.shields.io/discord/691848117066137631?labelColor=5cafcf&label=Discord%20Chat&style=social&logo=discord)
+
+**View app: [https://covid19.landofhere.com](https://covid19.landofhere.com)
+
+---
 
 Curating a basic subset of useful information about COVID-19. Experimenting with changing the context that viewers recieve about the virus. My initial response to the [COVID-19 Global Cases app](https://www.arcgis.com/apps/opsdashboard/index.html) by John Hopkins was one of reminiscent surprise as real world conflation of [Plague, Inc](https://www.ndemiccreations.com/en/22-plague-inc) (a global pathogen strategy/simulation game first released in 2012). Mixed feelings are generated in the struggle between the gravity of life and death of the situation versus the building global anxiety and variety of responses to the future uncertainty.
 

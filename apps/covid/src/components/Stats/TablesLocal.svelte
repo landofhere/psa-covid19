@@ -247,9 +247,4 @@
   countryName={countryLong}
   updated={last_updated} />
 
-<TableSubRegional
-  {regionData}
-  regionName={region}
-  countyName={county}
-  loading={!countryDataLoaded && !regionDataLoaded}
-  {theme} />
+<TableSubRegional regionName={region} countyName={county} {theme} />

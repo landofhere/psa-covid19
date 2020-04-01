@@ -115,15 +115,17 @@
   $: sorted = ''
   $: colSorted = 'active'
 
-  const CACountyURL = process.env.CA_COUNTY_URL
-  export let regionData
+  const API_URL = process.env.API_URL
+  const API_CA_COUNTY_FILE = process.env.API_CA_COUNTY_FILE
+  const CA_COUNTY_URL_V2 = process.env.CA_COUNTY_URL_V2
+  const CACountyURL = `${API_URL}${API_CA_COUNTY_FILE}${CA_COUNTY_URL_V2}`
+
   export let regionName
   export let countyName
 
   let countyShort = countyName.replace(' County', '')
   let regionUpper = regionName.toUpperCase()
 
-  export let loading = true
   let total_confirmed
   let total_active
   let total_recovered
@@ -133,7 +135,6 @@
   let cntyUpdated
   let countyLoading = true
 
-  $: console.log('TableRegional:', regionData, loading)
   $: subRegionData = []
   $: sData = []
   $: sortedSymb = '&nbsp;▼'
@@ -145,44 +146,39 @@
     switch (sortBy) {
       case 'region':
         colSorted = 'region'
-        return (sData = sortObjectsArray(subRegionData, 'Name', opts))
+        return (sData = sortObjectsArray(subRegionData.data, 'Name', opts))
         break
       case 'confirmed':
         colSorted = 'confirmed'
-        return (sData = sortObjectsArray(subRegionData, 'Confirmed', opts))
+        return (sData = sortObjectsArray(subRegionData.data, 'Confirmed', opts))
         break
       case 'recovered':
         colSorted = 'recovered'
-        return (sData = sortObjectsArray(subRegionData, 'Recovered', opts))
+        return (sData = sortObjectsArray(subRegionData.data, 'Recovered', opts))
         break
       case 'deaths':
         colSorted = 'deaths'
-        return (sData = sortObjectsArray(subRegionData, 'Deaths', opts))
+        return (sData = sortObjectsArray(subRegionData.data, 'Deaths', opts))
         break
       default:
         colSorted = 'active'
-        return (sData = sortObjectsArray(subRegionData, 'Active', opts))
+        return (sData = sortObjectsArray(subRegionData.data, 'Active', opts))
     }
   }
 
   onMount(async function getData() {
     const resp = await fetch(CACountyURL)
     subRegionData = await resp.json()
-    console.log('subRegion data:', subRegionData)
-    total_confirmed = subRegionData[regionUpper].cases.total
-    total_active =
-      subRegionData[regionUpper].cases.total -
-      subRegionData[regionUpper].deaths.total
+    let regionTotals = subRegionData.data.filter(
+      reg => reg.name === regionUpper,
+    )
+    total_confirmed = regionTotals[0].cases
+    total_active = regionTotals[0].cases - regionTotals[0].deaths
     total_recovered = 0
-    total_deaths = subRegionData[regionUpper].deaths.total
-    total_fatality_rate =
-      (subRegionData[regionUpper].deaths.total /
-        subRegionData[regionUpper].cases.total) *
-      100
+    total_deaths = regionTotals[0].deaths
+    total_fatality_rate = (regionTotals[0].deaths / regionTotals[0].cases) * 100
     total_recovery_rate = 0.0
     cntyUpdated = subRegionData.updated
-    delete subRegionData.updated
-    subRegionData = await internalizeCountryName(subRegionData)
     await sortData('region')
     countyLoading = false
   })
@@ -299,20 +295,20 @@
       {/if}
       {#if !countyLoading}
         {#each Object.keys(sData) as item}
-          {#if sData[item].Name !== 'CALIFORNIA' && sData[item].Name !== 'NA/CDC' && sData[item].Name !== 'BAY AREA'}
+          {#if sData[item].name !== 'CALIFORNIA' && sData[item].name !== 'NA/CDC' && sData[item].name !== 'BAY AREA'}
             <TR>
               <TD {theme} style={tdCountry}>
-                {String(JSON.stringify(sData[item].Name)).replace(/"/g, '')}
+                {String(JSON.stringify(sData[item].name)).replace(/"/g, '')}
               </TD>
               <TD style={td}>
-                {insertCommas(+sData[item].cases.total - +sData[item].deaths.total)}
+                {insertCommas(+sData[item].cases - +sData[item].deaths)}
               </TD>
-              <TD style={td}>{insertCommas(+sData[item].cases.total)}</TD>
-              <TD style={td}>{insertCommas(+sData[item].deaths.total)}</TD>
+              <TD style={td}>{insertCommas(+sData[item].cases)}</TD>
+              <TD style={td}>{insertCommas(+sData[item].deaths)}</TD>
               <TD
                 {theme}
-                style={[td, (+sData[item].deaths.total / +sData[item].cases.total) * 100 > total_fatality_rate && lRed, (+sData[item].deaths.total / +sData[item].cases.total) * 100 < total_fatality_rate && lGreen]}>
-                {((+sData[item].deaths.total / +sData[item].cases.total) * 100).toFixed(2)}%
+                style={[td, (+sData[item].deaths / +sData[item].cases) * 100 > total_fatality_rate && lRed, (+sData[item].deaths / +sData[item].cases) * 100 < total_fatality_rate && lGreen]}>
+                {((+sData[item].deaths / +sData[item].cases) * 100).toFixed(2)}%
               </TD>
               <TD style={td}>0.0%</TD>
               <TD {theme} style={td}>0</TD>
