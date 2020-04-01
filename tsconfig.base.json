@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "noImplicitReturns": true
+  },
+  "include": ["apps/covid-api"],
+  "exclude": ["node_modules"]
+}

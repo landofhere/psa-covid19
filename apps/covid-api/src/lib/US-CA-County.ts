@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { writeFile } from './fs'
 import { calcC19CACountyStats, calcC19CACountyStatsV2 } from './parse'
-import { resolve } from 'path'
+import fs from 'fs'
 
 const CACountyURL =
   'https://files.sfchronicle.com/project-feeds/covid19_us_cases_ca_by_county_.json'
@@ -17,26 +17,32 @@ export const getUS_CA_County = async () =>
       throw new Error(`getUS_CA_County: ${err}`)
     })
 
-export const parseUS_CA_County = async data =>
+export const parseUS_CA_County = async (data:any) =>
   calcC19CACountyStats(data, 'CALIFORNIA', { numberfy: true })
     .then(async resp => resp)
     .catch(err => {
       throw new Error(`getUS_CA_County: ${err}`)
     })
 
-export const parseUS_CA_County_NoTime = async data =>
+export const parseUS_CA_County_NoTime = async (data:any) =>
   calcC19CACountyStatsV2(data, 'CALIFORNIA', { numberfy: true, time: false })
     .then(async resp => resp)
     .catch(err => {
       throw new Error(`getUS_CA_County: ${err}`)
     })
 
-export const parseUS_CA_County_Indv = async data =>
+interface ICountyData {
+  name: string
+  cases: any
+  deaths: any
+}
+
+export const parseUS_CA_County_Indv = async (data:any) =>
   calcC19CACountyStatsV2(data, 'CALIFORNIA', { numberfy: true, time: true })
     .then(async resp => {
-      const tmpData = resp.data
+      const tmpData = resp.data ? resp.data : null
       if (tmpData.length > 0) {
-        tmpData.map(c => {
+        tmpData.map((c:ICountyData) => {
           const cntyName = c.name
           const cntyNameShort = cntyName.replace(' County', '')
           const cntyUrl = cntyNameShort
@@ -57,11 +63,10 @@ export const parseUS_CA_County_Indv = async data =>
       throw new Error(`getUS_CA_County: ${err}`)
     })
 
-export const writeUS_CA_County = async (data, filePath) =>
+export const writeUS_CA_County = async (data: any, filePath: fs.PathLike) =>
   writeFile(
     JSON.stringify(data, null, 2),
-    res => {
-      //console.log('writeUS_CA_County: ', res)
+    () => {
       return 'Success'
     },
     filePath,

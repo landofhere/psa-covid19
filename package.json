@@ -5,6 +5,13 @@
   "author": "Barry Low <barry@studiobear.co>",
   "license": "MIT",
   "private": true,
+  "keywords": [
+    "covid-19",
+    "svelte",
+    "designspek",
+    "typescript",
+    "monorepo"
+  ],
   "workspaces": {
     "packages": [
       "libs/*",
@@ -17,6 +24,8 @@
     ]
   },
   "scripts": {
+    "app": "yarn workspace covid",
+    "api": "yarn workspace covid-api",
     "build": "lerna run build",
     "watch": "lerna run dev",
     "clean": "lerna run clean",
@@ -31,8 +40,10 @@
     "fix-packages": "yarn monofix && yarn lint:fix && yarn eslint:fix",
     "commit": "git add . && git cz",
     "release": "standard-version",
+    "release:min": "yarn release --release-as minor",
     "imageVer": "export COMMIT=`git rev-parse --short HEAD` && sed -E -i'' \"s/(.*_generate:).*/\\1$COMMIT/\" 'docker-compose.covidapi.yml'",
-    "submod:update": "git -C ./sharedLib/COVID-19 submodule update --init"
+    "submod:init": "git -C ./sharedLib/COVID-19 submodule update --init",
+    "submod:update": "git -C ./sharedLib/COVID-19 pull origin master && git -C ./sharedLib/covid-19-data pull origin master"
   },
   "commitlint": {
     "extends": [
