@@ -14,8 +14,8 @@ const dataPath = './public/covid19_US_CA_County.json'
 const generateUS_CA_County = async () => {
   let data = await getUS_CA_County()
   let parsed = await parseUS_CA_County(data)
-  let write = await writeUS_CA_County(parsed, dataPath).then(res => {
-    return ftpFile()
+  return writeUS_CA_County(parsed, dataPath).then(res => {
+    return process.env.NODE_ENV === 'production' ? ftpFile() : 'SUCCESS'
   })
 }
 
@@ -24,8 +24,8 @@ const generateUS_CA_County_NoTime = async () => {
   let data = await getUS_CA_County()
   let parsed = await parseUS_CA_County_NoTime(data)
   parseUS_CA_County_Indv(data)
-  let write = await writeUS_CA_County(parsed, dataPathNoTime).then(res => {
-    return ftpFile()
+  return writeUS_CA_County(parsed, dataPathNoTime).then(res => {
+    return process.env.NODE_ENV === 'production' ? ftpFile() : 'SUCCESS'
   })
 }
 
