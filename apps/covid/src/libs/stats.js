@@ -2,7 +2,7 @@ export const fatalityRate = d => (d.Deaths / d.Confirmed) * 100
 
 export const recoveryRate = d => (d.Recovered / d.Confirmed) * 100
 
-export const percentChange = (n,c) => (n <= 0) ? 0 : ((c - n)/c) * 100
+export const percentChange = (n, c) => (n <= 0 ? 0 : ((c - n) / c) * 100)
 
 export const internalizeCountryName = data => {
   let newData = []

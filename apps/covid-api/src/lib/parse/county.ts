@@ -60,7 +60,14 @@ const parseC19CACountyStats = async (
         category.twoDayChange = itemChange.twoDay
         category.weekChange = itemChange.week
       }
-      itemCategory = { [item.CATEGORY]: category }
+      let catKay = item.CATEGORY === 'cases' ? 'confirmed' : 'deaths'
+      itemCategory = {
+        [catKay]: category.total,
+        [`${catKay}DayChange`]: category.dayChange,
+        [`${catKay}TwoDayChange`]: category.twoDayChange,
+        [`${catKay}WeekChange`]: category.weekChange,
+        [`${catKay}Time`]: category.time,
+      }
       if (item.c2p_pubdate)
         combined = { updated: item.c2p_pubdate, ...combined }
       if (combined.hasOwnProperty(item.GEOGRAPHY)) {
@@ -70,7 +77,7 @@ const parseC19CACountyStats = async (
       } else {
         itemData = { [item.GEOGRAPHY]: itemCategory }
       }
-      // console.log('calcCountyItem: ', itemData)
+      console.log('calcCountyItem: ', itemData)
       combined = { ...combined, ...itemData }
     }),
   ).then(res => {
