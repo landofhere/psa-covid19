@@ -18,7 +18,7 @@ const generateUSCACounty = async () => {
   )
 }
 
-const dataPathNoTime = './public/covid19_US_CA_County_NoTime.json'
+const dataPathNoTime = './public/covid19_US_CA_County_V3.json'
 const generateUSCACountyNoTime = async () => {
   const data = await getUSCACounty()
   const parsed = await parseUSCACountyNoTime(data)

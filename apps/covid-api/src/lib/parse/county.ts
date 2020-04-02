@@ -7,9 +7,16 @@ interface DefaultOpts {
 
 interface Category {
   total: string | number
-  time: any[]
+  dayChange: number
+  twoDayChange: number
+  weekChange: number
+  time?: any[]
 }
-
+interface ItemChange {
+  day: number
+  week: number
+  twoDay: number
+}
 const defaultOpts: DefaultOpts = {
   numberfy: false,
   time: true,
@@ -26,16 +33,22 @@ const parseC19CACountyStats = async (
       let itemData = {}
       let itemCategory = {}
       let dateItems = []
-      let category: string | Category = { total: '', time: [] }
+      let category: string | Category = { total: '', dayChange: 0, twoDayChange: 0,weekChange: 0, time: [] }
 
       dateItems = await objDateToArray(item, opts.numberfy)
-      const itemChange = await calcChange(dateItems, [{ day: 1 }, { week: 7 }])
-
+      const itemChange: ItemChange = await calcChange(dateItems, [{ day: 1 },{ twoDay: 2 }, { week: 7 }])
+      // console.log('parse calcChange', itemChange)
       if (opts.time) {
         category.total = opts.numberfy ? +item.TOTALS : item.TOTALS
+        category.dayChange = itemChange.day
+        category.twoDayChange = itemChange.twoDay
+        category.weekChange = itemChange.week
         category.time = dateItems
       } else {
-        category = opts.numberfy ? +item.TOTALS : item.TOTALS
+        category.total = opts.numberfy ? +item.TOTALS : item.TOTALS
+        category.dayChange = itemChange.day
+        category.twoDayChange = itemChange.twoDay
+        category.weekChange = itemChange.week
       }
       itemCategory = { [item.CATEGORY]: category }
       if (item.c2p_pubdate)
