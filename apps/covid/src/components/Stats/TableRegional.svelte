@@ -120,7 +120,7 @@
   let total_fatality_rate
   let total_recovery_rate
 
-  $: console.log('TableRegional:', countryData, regionData, loading)
+  // $: console.log('TableRegional:', countryData, regionData, loading)
   $: sData = []
   $: sortedSymb = '&nbsp;▼'
 
@@ -171,13 +171,13 @@
 <Box style={tableContainer}>
   <Table fixed style={tableGlobal}>
     <THead as="colGroup">
-      <col style={colCountry} />
-      <col style={colStat} />
-      <col style={colStat} />
-      <col style={colStat} />
-      <col style={colStat} />
-      <col style={colStat} />
-      <col style={colStat} />
+      <THead as="col" style={colCountry} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colStat} />
     </THead>
     <THead as="thead" style={tableHeader}>
       <TR>

@@ -42,8 +42,14 @@ export const writeUSCACounty = async (data: any, filePath: fs.PathLike) =>
 
 interface CountyData {
   name: string
-  cases: any
-  deaths: any
+  confirmed: number
+  confirmedDayChange: number
+  confirmedTwoDayChange: number
+  confirmedWeekChange: number
+  deaths: number
+  deathsDayChange: number
+  confirmeddeathsTwoDayChange: number
+  deathsWeekChange: number
 }
 
 export const parseUSCACountyIndv = async (data: any) =>
@@ -59,9 +65,8 @@ export const parseUSCACountyIndv = async (data: any) =>
             .toLowerCase()
           const countyData = {
             name: cntyNameShort,
-            cases: c.cases,
-            deaths: c.deaths,
             updated: resp.updated,
+            ...c,
           }
           const filePath = `./public/covid19_US_CA_County_${cntyUrl}.json`
           writeUSCACounty(countyData, filePath)

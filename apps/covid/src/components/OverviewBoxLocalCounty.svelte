@@ -23,7 +23,6 @@
   // const CACountyURL =
   //  'https://files.sfchronicle.com/project-feeds/covid19_us_cases_ca_by_county_.json'
 
-  const CA_COUNTY_URL_V2 = process.env.CA_COUNTY_URL_V2
   const API_URL = process.env.API_URL
   const API_CA_COUNTY_FILE = process.env.API_CA_COUNTY_FILE
 
@@ -124,8 +123,8 @@
       available = true
     }
 
-    cntyConfirmed = tempCnty.cases.total || 0
-    cntyDeaths = tempCnty.deaths.total || 0
+    cntyConfirmed = tempCnty.confirmed || 0
+    cntyDeaths = tempCnty.deaths || 0
     cntyFatalityRate = (cntyDeaths / cntyConfirmed) * 100 || 0
   })
 </script>
@@ -156,7 +155,7 @@
     <Box style={overviewBottomBox}>
       <Text style={btmh6}>
         {@html `Unfortunately, recoveries are not being tracked or are unavailable at this time at
-        the county level. This means we cannot track progress locally. Thus, the local goal is to keep <strong># of confirmed</strong> as low as possible.`}
+        the state and county level. This means we cannot track progress locally. Thus, the local goal is to keep <strong># of confirmed</strong> as low as possible.`}
       </Text>
     </Box>
   </Flex>

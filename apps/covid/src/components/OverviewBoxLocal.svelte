@@ -1,8 +1,9 @@
 <script>
   import { onMount } from 'svelte'
   import { Flex, Box, Heading, Text } from '@studiobear/designspek-components'
+  import { styled } from '@studiobear/designspek'
   import OverviewBoxLocalCounty from './OverviewBoxLocalCounty.svelte'
-  import { insertCommas, capitalize } from '../libs'
+  import { insertCommas, capitalize, percentChange } from '../libs'
   export let theme = $$props.theme || {}
   export let data
   export let local
@@ -79,6 +80,18 @@
   $: regDeaths = regionData.Deaths || 0
   $: regFatalityRate = (regDeaths / regConfirmed) * 100 || 0
   $: regRecoveryRate = (regRecovered / regConfirmed) * 100 || 0
+  $: regConfirmedDayChange = 0
+  $: regConfirmedWeekChange = 0
+  $: regDeathsDayChange = 0
+  $: regDeathsWeekChange = 0
+  $: regDeathsDayChangePct = 0
+  $: regDeathsWeekChangePct = 0
+  $: regActiveDayChange = 0
+  $: regActiveWeekChange = 0
+  $: regActiveDayChangePct = 0
+  $: regActiveWeekChangePct = 0
+  $: regConfirmedDayChangePct = 0
+  $: regConfirmedWeekChangePct = 0
 
   $: overviewBox = {
     w: '100%',
@@ -116,6 +129,60 @@
     pb: '1.5rem',
   }
 
+  $: overviewBoxActiveChange = {
+    ...overviewSingleBox,
+    bg: theme.colors.quaternary,
+    pb: '1.5rem',
+    pt: '0.5rem',
+    flexdir: 'column',
+  }
+
+  $: BoxActiveChangeLower = {
+    flexdir: 'row',
+    width: '100%',
+  }
+  $: ActiveChange1 = {
+    w: '46%',
+    pl: '2%',
+    pr: '1%',
+    txtAlign: 'center',
+  }
+  $: ActiveChange2 = {
+    minw: '48%',
+    pr: '2%',
+    pl: '1%',
+  }
+
+  $: changeMiddleBox = {
+    flexdir: 'row',
+    width: '100%',
+    alignc: 'stretch',
+    pb: '0.5rem',
+    bg: theme.colors.background,
+  }
+
+  $: BoxMiddleChange = {
+    flexdir: 'column',
+    minw: '50%',
+  }
+
+  $: BoxMiddleChangeLower = {
+    flexdir: 'column',
+  }
+
+  $: MiddleChange1 = {
+    w: '94%',
+    pl: '5%',
+    pr: '1%',
+    txtAlign: 'center',
+  }
+  $: MiddleChange2 = {
+    w: '94%',
+    pr: '5%',
+    pl: '1%',
+    txtAlign: 'center',
+  }
+
   $: overviewBottomBox = {
     ...overviewMiddleBox,
     bg: theme.colors.grey,
@@ -135,6 +202,7 @@
     color: theme.colors.background,
     my: '0.5rem',
   }
+
   $: middleh6 = {
     txtAlign: 'center',
     color: theme.colors.tertiary,
@@ -165,23 +233,79 @@
     color: theme.colors.text,
     fontSize: '1.5rem',
   }
+  $: changeh4 = {
+    color: theme.colors.lightYellow,
+    fontSize: '1rem',
+    fontWeight: '700',
+    lineHeight: '1.3rem',
+  }
+
+  $: deathsh4 = {
+    color: theme.colors.purple,
+    fontSize: '1rem',
+    fontWeight: '700',
+    lineHeight: '1.3rem',
+  }
+  $: confirmh4 = {
+    color: theme.colors.blue,
+    fontSize: '1rem',
+    fontWeight: '700',
+    lineHeight: '1.3rem',
+  }
+
+  $: spanh4 = styled(
+    {
+      fontSize: '1rem',
+      fontWeight: '300',
+      lineHeight: '1.3rem',
+      txtTran: 'uppercase',
+    },
+    theme,
+  )
 
   const API_URL = process.env.API_URL
   const API_CA_COUNTY_FILE = process.env.API_CA_COUNTY_FILE
-
   const API_CA_COUNTY_URL = `${API_URL}${API_CA_COUNTY_FILE}`
+
+  let dataChange = false
   onMount(async function getData() {
     const respCA = await fetch(`${API_CA_COUNTY_URL}${regLower}.json`)
     let tempCA = await respCA.json()
     // console.log('V2 CA CNTY: ', tempCA, regionData)
     let regName = capitalize(tempCA.name)
     if (regName === region) {
-      regConfirmed = tempCA.cases.total || 0
-      regDeaths = tempCA.deaths.total || 0
+      regConfirmed = tempCA.confirmed || 0
+      regDeaths = tempCA.deaths || 0
       regRecovered = 0
       regActive = regConfirmed - (regDeaths + regRecovered) || 0
       regFatalityRate = (regDeaths / regConfirmed) * 100 || 0
       regRecoveryRate = (regRecovered / regConfirmed) * 100 || 0
+      regConfirmedDayChange = tempCA.confirmedDayChange || 0
+      regConfirmedWeekChange = tempCA.confirmedWeekChange || 0
+      regConfirmedDayChangePct = Math.round(
+        percentChange(regConfirmedDayChange, regConfirmed),
+      )
+      regConfirmedWeekChangePct = Math.round(
+        percentChange(regConfirmedWeekChange, regConfirmed),
+      )
+      regDeathsDayChange = tempCA.deathsDayChange || 0
+      regDeathsWeekChange = tempCA.deathsWeekChange || 0
+      regDeathsDayChangePct = Math.round(
+        percentChange(regDeathsDayChange, regDeaths),
+      )
+      regDeathsWeekChangePct = Math.round(
+        percentChange(regDeathsWeekChange, regDeaths),
+      )
+      regActiveDayChange = regConfirmedDayChange - regDeathsDayChange
+      regActiveWeekChange = regConfirmedWeekChange - regDeathsWeekChange
+      regActiveDayChangePct = Math.round(
+        percentChange(regActiveDayChange, regActive),
+      )
+      regActiveWeekChangePct = Math.round(
+        percentChange(regActiveWeekChange, regActive),
+      )
+      updated = tempCA.updated || overview.updated || 'Unknown'
+      dataChange = true
     }
   })
 </script>
@@ -191,7 +315,7 @@
     <Heading as="h6" style={ovTitle}>Cases Near Me</Heading>
   </Box>
   <Box style={overviewSingleBoxActive}>
-    <Heading as="h6" style={h6}>{countryLong} Active</Heading>
+    <Heading as="h6" style={h6}>{countryLong} Active Cases</Heading>
     <Heading as="h2" style={activeh2}>{insertCommas(cntryActive)}</Heading>
   </Box>
   <Flex style={overviewMiddleBox}>
@@ -223,41 +347,122 @@
     </Box>
   </Flex>
   {#if regionData}
-    <Box style={overviewSingleBoxActive}>
-      <Heading as="h6" style={h6}>{region} Active</Heading>
-      <Heading as="h2" style={activeh2}>{insertCommas(regActive)}</Heading>
-    </Box>
-    <Flex style={overviewMiddleBox}>
-      <Box style={overviewSingleBox}>
-        <Heading as="h6" style={middleh6}>{regionShort} Recoveries</Heading>
-        <Heading as="h3" style={recoverh3}>
-          {insertCommas(regRecovered)}
-        </Heading>
+    {#if !dataChange}
+      <Box style={overviewSingleBoxActive}>
+        <Heading as="h6" style={h6}>{region} Active Cases</Heading>
+        <Heading as="h2" style={activeh2}>{insertCommas(regActive)}</Heading>
       </Box>
-      <Box style={overviewSingleBox}>
-        <Heading as="h6" style={middleh6}>{regionShort} Confirmed</Heading>
-        <Heading as="h3" style={confirmh3}>
-          {insertCommas(regConfirmed)}
-        </Heading>
-      </Box>
-      <Box style={overviewSingleBox}>
-        <Heading as="h6" style={middleh6}>{regionShort} Deaths</Heading>
-        <Heading as="h3" style={deathh3}>{insertCommas(regDeaths)}</Heading>
-      </Box>
-    </Flex>
-    <Flex style={overviewBottomBox}>
-      <Box style={overviewSingleBox}>
-        <Heading as="h6" style={btmh6}>{regionShort} Recovery Rate</Heading>
-        <Heading as="h4" style={btmh4}>{regRecoveryRate.toFixed(2)}%</Heading>
-      </Box>
-      <Box style={overviewSingleBox}>
-        <Heading as="h6" style={btmh6}>{regionShort} Fatality Rate</Heading>
-        <Heading as="h4" style={btmh4}>{regFatalityRate.toFixed(2)}%</Heading>
-      </Box>
-    </Flex>
+      <Flex style={overviewMiddleBox}>
+        <Box style={overviewSingleBox}>
+          <Heading as="h6" style={middleh6}>{regionShort} Recoveries</Heading>
+          <Heading as="h3" style={recoverh3}>
+            {insertCommas(regRecovered)}
+          </Heading>
+        </Box>
+        <Box style={overviewSingleBox}>
+          <Heading as="h6" style={middleh6}>{regionShort} Confirmed</Heading>
+          <Heading as="h3" style={confirmh3}>
+            {insertCommas(regConfirmed)}
+          </Heading>
+        </Box>
+        <Box style={overviewSingleBox}>
+          <Heading as="h6" style={middleh6}>{regionShort} Deaths</Heading>
+          <Heading as="h3" style={deathh3}>{insertCommas(regDeaths)}</Heading>
+        </Box>
+      </Flex>
+      <Flex style={overviewBottomBox}>
+        <Box style={overviewSingleBox}>
+          <Heading as="h6" style={btmh6}>{regionShort} Recovery Rate</Heading>
+          <Heading as="h4" style={btmh4}>{regRecoveryRate.toFixed(2)}%</Heading>
+        </Box>
+        <Box style={overviewSingleBox}>
+          <Heading as="h6" style={btmh6}>{regionShort} Fatality Rate</Heading>
+          <Heading as="h4" style={btmh4}>{regFatalityRate.toFixed(2)}%</Heading>
+        </Box>
+      </Flex>
+    {:else}
+      <Flex style={overviewBoxActiveChange}>
+        <Box style={overviewSingleBox}>
+          <Heading as="h6" style={h6}>{region} Active Cases</Heading>
+        </Box>
+        <Flex style={BoxActiveChangeLower}>
+          <Box style={ActiveChange1}>
+            <Heading as="h2" style={activeh2}>
+              {insertCommas(regActive)}
+            </Heading>
+          </Box>
+          <Box style={ActiveChange2}>
+            <Heading as="h4" style={changeh4}>
+              +{insertCommas(regActiveDayChange)}
+              <span class={spanh4}>(+{regActiveDayChangePct}%) Day</span>
+            </Heading>
+            <Heading as="h4" style={changeh4}>
+              +{insertCommas(regActiveWeekChange)}
+              <span class={spanh4}>(+{regActiveWeekChangePct}%) Week</span>
+            </Heading>
+          </Box>
+        </Flex>
+      </Flex>
+      <Flex style={changeMiddleBox}>
+        <Flex style={BoxMiddleChange}>
+          <Box style={overviewSingleBox}>
+            <Heading as="h6" style={middleh6}>{regionShort} Confirmed</Heading>
+          </Box>
+          <Flex style={BoxMiddleChangeLower}>
+            <Box style={MiddleChange1}>
+              <Heading as="h3" style={confirmh3}>
+                {insertCommas(regConfirmed)}
+              </Heading>
+            </Box>
+            <Box style={MiddleChange1}>
+              <Heading as="h4" style={confirmh4}>
+                +{insertCommas(regConfirmedDayChange)}
+                <span class={spanh4}>(+{regConfirmedDayChangePct}%) Day</span>
+              </Heading>
+              <Heading as="h4" style={confirmh4}>
+                +{insertCommas(regConfirmedWeekChange)}
+                <span class={spanh4}>(+{regConfirmedWeekChangePct}%) Week</span>
+              </Heading>
+            </Box>
+          </Flex>
+        </Flex>
+        <Flex style={BoxMiddleChange}>
+          <Box style={overviewSingleBox}>
+            <Heading as="h6" style={middleh6}>{regionShort} Deaths</Heading>
+          </Box>
+          <Flex style={BoxMiddleChangeLower}>
+            <Box style={MiddleChange2}>
+              <Heading as="h3" style={deathh3}>
+                {insertCommas(regDeaths)}
+              </Heading>
+            </Box>
+            <Box style={MiddleChange2}>
+              <Heading as="h4" style={deathsh4}>
+                +{insertCommas(regDeathsDayChange)}
+                <span class={spanh4}>(+{regDeathsDayChangePct}%) Day</span>
+              </Heading>
+              <Heading as="h4" style={deathsh4}>
+                +{insertCommas(regDeathsWeekChange)}
+                <span class={spanh4}>(+{regDeathsWeekChangePct}%) Week</span>
+              </Heading>
+            </Box>
+          </Flex>
+        </Flex>
+      </Flex>
+      <Flex style={overviewBottomBox}>
+        <Box style={overviewSingleBox}>
+          <Heading as="h6" style={btmh6}>{regionShort} Recovery Rate</Heading>
+          <Heading as="h4" style={btmh4}>{regRecoveryRate.toFixed(2)}%</Heading>
+        </Box>
+        <Box style={overviewSingleBox}>
+          <Heading as="h6" style={btmh6}>{regionShort} Fatality Rate</Heading>
+          <Heading as="h4" style={btmh4}>{regFatalityRate.toFixed(2)}%</Heading>
+        </Box>
+      </Flex>
+    {/if}
   {/if}
   {#if region === 'California'}
     <OverviewBoxLocalCounty {theme} {county} {region} />
   {/if}
-
+  <Text style={ovUpdated}>Local data updated: {updated}</Text>
 </Flex>
