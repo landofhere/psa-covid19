@@ -1,15 +1,15 @@
 import { fatalityRate, recoveryRate } from './index'
-export const calcC19Stats = (d:any) => {
-  let combined: any = {}
-  let total_deaths = 0
-  let total_confirmed = 0
-  let total_active = 0
-  let total_recovered = 0
-  let last_updated = 0
+export const calcC19Stats = (d: any) => {
+  const combined: any = {}
+  let totalDeaths = 0
+  let totalConfirmed = 0
+  let totalActive = 0
+  let totalRecovered = 0
+  let lastUpdated = 0
 
-  d.map((item:any) => {
+  d.map((item: any) => {
     item = item['attributes']
-    var build_item = {
+    const buildItem = {
       Confirmed: item.Confirmed,
       Active: item.Confirmed - (item.Recovered + item.Deaths),
       Deaths: item.Deaths,
@@ -24,40 +24,40 @@ export const calcC19Stats = (d:any) => {
       },
     }
     if (item.Country_Region in combined) {
-      combined[item.Country_Region].Confirmed += build_item.Confirmed
-      combined[item.Country_Region].Active += build_item.Active
-      combined[item.Country_Region].Deaths += build_item.Deaths
-      combined[item.Country_Region].Recovered += build_item.Recovered
+      combined[item.Country_Region].Confirmed += buildItem.Confirmed
+      combined[item.Country_Region].Active += buildItem.Active
+      combined[item.Country_Region].Deaths += buildItem.Deaths
+      combined[item.Country_Region].Recovered += buildItem.Recovered
       combined[item.Country_Region].SubRegion = {
-        [build_item.SubRegion.name]: { ...build_item.SubRegion },
+        [buildItem.SubRegion.name]: { ...buildItem.SubRegion },
         ...combined[item.Country_Region].SubRegion,
       }
     } else {
-      combined[item.Country_Region] = build_item
+      combined[item.Country_Region] = buildItem
       combined[item.Country_Region].SubRegion = {
-        [build_item.SubRegion.name]: { ...build_item.SubRegion },
+        [buildItem.SubRegion.name]: { ...buildItem.SubRegion },
       }
     }
-    total_deaths += item.Deaths
-    total_confirmed += item.Confirmed
-    total_active += item.Confirmed - (item.Recovered + item.Deaths)
-    total_recovered += item.Recovered
-    last_updated =
-      item.Last_Update > last_updated ? item.Last_Update : last_updated
+    totalDeaths += item.Deaths
+    totalConfirmed += item.Confirmed
+    totalActive += item.Confirmed - (item.Recovered + item.Deaths)
+    totalRecovered += item.Recovered
+    lastUpdated =
+      item.Last_Update > lastUpdated ? item.Last_Update : lastUpdated
   })
-  let updated = new Date(last_updated)
+  const updated = new Date(lastUpdated)
   return {
-    totalConfirmed: total_confirmed,
-    totalActive: total_active,
-    totalDeaths: total_deaths,
-    totalRecovered: total_recovered,
+    totalConfirmed: totalConfirmed,
+    totalActive: totalActive,
+    totalDeaths: totalDeaths,
+    totalRecovered: totalRecovered,
     totalFatalityRate: fatalityRate({
-      Deaths: total_deaths,
-      Confirmed: total_confirmed,
+      Deaths: totalDeaths,
+      Confirmed: totalConfirmed,
     }),
     totalRecoveryRate: recoveryRate({
-      Recovered: total_recovered,
-      Confirmed: total_confirmed,
+      Recovered: totalRecovered,
+      Confirmed: totalConfirmed,
     }),
     lastUpdated: `${updated.toLocaleDateString()} ${updated.toLocaleTimeString()}`,
     data: combined,

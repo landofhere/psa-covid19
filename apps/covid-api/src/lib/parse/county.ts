@@ -10,12 +10,16 @@ interface Category {
   time: any[]
 }
 
-const defaultOpts:DefaultOpts = {
+const defaultOpts: DefaultOpts = {
   numberfy: false,
   time: true,
 }
 
-const parseC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => {
+const parseC19CACountyStats = async (
+  d: any,
+  region: string,
+  opts: DefaultOpts,
+) => {
   let combined: any = {}
   return Promise.all(
     d.map(async (item: any) => {
@@ -25,7 +29,7 @@ const parseC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => 
       let category: string | Category = { total: '', time: [] }
 
       dateItems = await objDateToArray(item, opts.numberfy)
-      let itemChange = await calcChange(dateItems, [{'day': 1},{'week': 7}])
+      const itemChange = await calcChange(dateItems, [{ day: 1 }, { week: 7 }])
 
       if (opts.time) {
         category.total = opts.numberfy ? +item.TOTALS : item.TOTALS
@@ -52,8 +56,11 @@ const parseC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => 
   })
 }
 
-
-export const calcC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => {
+export const calcC19CACountyStats = async (
+  d: any,
+  region: string,
+  opts: DefaultOpts,
+) => {
   const parseData = await parseC19CACountyStats(d, region, {
     ...defaultOpts,
     ...opts,
@@ -66,28 +73,36 @@ export const calcC19CACountyStats = async (d:any, region:string, opts:DefaultOpt
   return parseData
 }
 
-interface ICACountyStatsV2{
+interface CACountyStatsV2 {
   updated?: string
   data?: any
   [key: string]: any
 }
 
-type CalcC19CACountyStatsV2 = (d:any, region:string, opts:DefaultOpts) => Promise<ICACountyStatsV2>
+type CalcC19CACountyStatsV2 = (
+  d: any,
+  region: string,
+  opts: DefaultOpts,
+) => Promise<CACountyStatsV2>
 
-export const calcC19CACountyStatsV2: CalcC19CACountyStatsV2 = async (d, region, opts) => {
+export const calcC19CACountyStatsV2: CalcC19CACountyStatsV2 = async (
+  d,
+  region,
+  opts,
+) => {
   const parseData = await parseC19CACountyStats(d, region, {
     ...defaultOpts,
     ...opts,
   })
     .then((res: any) => {
-      let tmpUpdated = res.updated
+      const tmpUpdated = res.updated
       delete res.updated
-      let data = internalizeName(res)
+      const data = internalizeName(res)
       return { updated: tmpUpdated, data }
     })
     .catch((err: any) => {
       console.log('calcStats err: ', err)
-      return {error: 'ERROR!'}
+      return { error: 'ERROR!' }
     })
   return parseData
 }
