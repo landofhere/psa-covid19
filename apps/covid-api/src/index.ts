@@ -7,9 +7,13 @@ import {
   writeUSCACounty,
   parseUSCACountyIndv,
   ftpFile,
+  getUSStates
 } from './lib'
+import {resolve} from 'path'
 
 const dataPath = './public/covid19_US_CA_County.json'
+
+// *DEPRECATED*
 const generateUSCACounty = async () => {
   const data = await getUSCACounty()
   const parsed = await parseUSCACounty(data)
@@ -24,8 +28,14 @@ const generateUSCACountyNoTime = async () => {
   const parsed = await parseUSCACountyNoTime(data)
   parseUSCACountyIndv(data)
   return writeUSCACounty(parsed, dataPathNoTime).then(() =>
-    process.env.NODE_ENV === 'production' ? ftpFile() : console.log('SUCCESS'),
+    process.env.NODE_ENV === 'production' ? ftpFile() : console.log('generateUSCACountyNoTime SUCCESS'),
   )
+}
+
+const US_STATES_PATH = resolve('../../sharedLib/covid-19-data/us-states.csv')
+const generateUSStates = () => {
+  const data = getUSStates(US_STATES_PATH)
+  return console.log('generateUSStates SUCCESS')
 }
 
 const date: Date = new Date()
@@ -43,6 +53,7 @@ if (process.env.NODE_ENV === 'production') {
   job.start()
   job2.start()
 } else {
-  generateUSCACounty()
+  // generateUSCACounty()
   generateUSCACountyNoTime()
+  generateUSStates()
 }
