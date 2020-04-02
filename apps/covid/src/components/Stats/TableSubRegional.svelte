@@ -10,6 +10,7 @@
     TD,
     Box,
   } from '@studiobear/designspek-components'
+  import { styled } from '@studiobear/designspek'
   import sortObjectsArray from 'sort-objects-array'
 
   import {
@@ -18,6 +19,7 @@
     calcC19CACountyStats,
     insertCommas,
     internalizeCountryName,
+    percentChange
   } from '../../libs'
   import Loading from '../Loading.svelte'
   import {
@@ -49,8 +51,9 @@
   $: lPurple = { bg: theme.colors.lightPurple }
 
   const tableGlobal = { minw: '30rem' }
-  const colCountry = { w: '22%' }
-  const colStat = { w: '13%' }
+  const colCountry = { w: '20%' }
+  const colStat = { w: '10%' }
+  const colChange = { w: '23%' }
 
   $: th = {
     pos: 'sticky',
@@ -112,13 +115,18 @@
     animation: 'spin 6s infinite',
   }
 
+  $: pctSpan = styled({
+    fontSize: '0.8rem',
+    color: theme.colors.tertiary
+  }, theme)
+
   $: sorted = ''
   $: colSorted = 'active'
 
   const API_URL = process.env.API_URL
   const API_CA_COUNTY_FILE = process.env.API_CA_COUNTY_FILE
-  const CA_COUNTY_URL_V2 = process.env.CA_COUNTY_URL_V2
-  const CACountyURL = `${API_URL}${API_CA_COUNTY_FILE}${CA_COUNTY_URL_V2}`
+  const CA_COUNTY_URL_V3 = process.env.CA_COUNTY_URL_V3
+  const CACountyURL = `${API_URL}${API_CA_COUNTY_FILE}${CA_COUNTY_URL_V3}`
 
   export let regionName
   export let countyName
@@ -126,12 +134,24 @@
   let countyShort = countyName.replace(' County', '')
   let regionUpper = regionName.toUpperCase()
 
-  let total_confirmed
-  let total_active
-  let total_recovered
-  let total_deaths
-  let total_fatality_rate
-  let total_recovery_rate
+  let totalConfirmed 
+  let totalConfirmedDay
+  let totalConfirmedDayPct
+  let totalConfirmedWeek
+  let totalConfirmedWeekPct
+  let totalActive
+  let totalActiveDay
+  let totalActiveDayPct
+  let totalActiveWeek
+  let totalActiveWeekPct
+  let totalRecovered
+  let totalDeaths
+  let totalDeathsDay
+  let totalDeathsDayPct
+  let totalDeathsWeek
+  let totalDeathsWeekPct
+  let totalFatalityRate
+  let totalRecoveryRate
   let cntyUpdated
   let countyLoading = true
 
@@ -172,12 +192,25 @@
     let regionTotals = subRegionData.data.filter(
       reg => reg.name === regionUpper,
     )
-    total_confirmed = regionTotals[0].cases
-    total_active = regionTotals[0].cases - regionTotals[0].deaths
-    total_recovered = 0
-    total_deaths = regionTotals[0].deaths
-    total_fatality_rate = (regionTotals[0].deaths / regionTotals[0].cases) * 100
-    total_recovery_rate = 0.0
+    totalConfirmed = regionTotals[0].cases.total
+    totalConfirmedDay = regionTotals[0].cases.dayChange
+    totalConfirmedWeek = regionTotals[0].cases.weekChange
+    totalDeaths = regionTotals[0].deaths.total
+    totalDeathsDay = regionTotals[0].deaths.dayChange
+    totalDeathsWeek = regionTotals[0].deaths.weekChange
+    totalDeathsDayPct = percentChange(totalDeathsDay, totalDeaths )
+    totalDeathsWeekPct = percentChange(totalDeathsWeek, totalDeaths )
+    totalActive = totalConfirmed - totalDeaths
+    totalActiveDay = regionTotals[0].cases.dayChange - regionTotals[0].deaths.dayChange
+    totalActiveWeek = regionTotals[0].cases.weekChange - regionTotals[0].deaths.weekChange
+    totalActiveDayPct = percentChange(totalActiveDay, totalActive )
+    totalActiveWeekPct = percentChange(totalActiveWeek, totalActive )
+    totalRecovered = 0
+
+    console.log('RegionStats: ', regionTotals[0].name, totalConfirmed, totalConfirmedDay, totalActive, totalActiveDay, totalActiveWeek, totalActiveDayPct, totalActiveWeekPct, totalDeaths, totalDeathsDay, totalDeathsDayPct, totalDeathsWeekPct)
+    
+    totalFatalityRate = (regionTotals[0].deaths / regionTotals[0].cases) * 100
+    totalRecoveryRate = 0.0
     cntyUpdated = subRegionData.updated
     await sortData('region')
     countyLoading = false
@@ -192,11 +225,10 @@
     <THead as="colGroup">
       <col style={colCountry} />
       <col style={colStat} />
+      <col style={colChange} />
       <col style={colStat} />
       <col style={colStat} />
-      <col style={colStat} />
-      <col style={colStat} />
-      <col style={colStat} />
+      <col style={colChange} />
     </THead>
     <THead as="thead" style={tableHeader}>
       <TR>
@@ -210,6 +242,14 @@
         </THead>
         <THead style={th} on:click={() => sortData('active')}>
           Active
+          <span>
+            {#if colSorted === 'active'}
+              {@html sortedSymb}
+            {:else}&nbsp;&nbsp;{/if}
+          </span>
+        </THead>
+        <THead style={th} on:click={() => sortData('active')}>
+          Active Change
           <span>
             {#if colSorted === 'active'}
               {@html sortedSymb}
@@ -230,29 +270,11 @@
             {@html sortedSymb}
           {:else}&nbsp;&nbsp;{/if}
         </THead>
-        <THead style={th} on:click={() => sortData('fatality')}>
-          Fatality Rate
-          <span>
-            {#if colSorted === 'fatality'}
-              {@html sortedSymb}
-            {:else}&nbsp;&nbsp;{/if}
-          </span>
-        </THead>
-        <THead style={th} on:click={() => sortData('recovery')}>
-          Recovery Rate
-          <span>
-            {#if colSorted === 'recovery'}
-              {@html sortedSymb}
-            {:else}&nbsp;&nbsp;{/if}
-          </span>
-        </THead>
-        <THead style={th} on:click={() => sortData('recovered')}>
-          Recovered
-          <span>
-            {#if colSorted === 'recovered'}
-              {@html sortedSymb}
-            {:else}&nbsp;&nbsp;{/if}
-          </span>
+        <THead style={th} on:click={() => sortData('deaths')}>
+          Deaths Change
+          {#if colSorted === 'deaths'}
+            {@html sortedSymb}
+          {:else}&nbsp;&nbsp;{/if}
         </THead>
       </TR>
       {#if !countyLoading}
@@ -260,23 +282,24 @@
           <TD {theme} style={[tdCountry, thGlobal]}>{regionName}</TD>
           <TD
             {theme}
-            style={[td, thGlobal, total_recovered > total_active && lPurple]}>
-            {insertCommas(total_active)}
-          </TD>
-          <TD {theme} style={[td, thGlobal]}>
-            {insertCommas(+total_confirmed)}
-          </TD>
-          <TD {theme} style={[td, thGlobal]}>{total_deaths}</TD>
-          <TD {theme} style={[td, thGlobal]}>
-            {total_fatality_rate.toFixed(2)}%
-          </TD>
-          <TD {theme} style={[td, thGlobal]}>
-            {total_recovery_rate.toFixed(2)}%
+            style={[td, thGlobal, totalRecovered > totalActive && lPurple]}>
+            {insertCommas(totalActive)}
           </TD>
           <TD
             {theme}
-            style={[td, thGlobal, total_recovered > total_active && lPurple]}>
-            {insertCommas(total_recovered)}
+            style={[td, thGlobal]}>
+            +{insertCommas(totalActiveDay)} <span class={pctSpan}>(+{Math.round(totalActiveDayPct)}%) Day</span>{@html '<br>'}
+            +{insertCommas(totalActiveWeek)} <span class={pctSpan}>(+{Math.round(totalActiveWeekPct)}%) Week</span>
+          </TD>
+          <TD {theme} style={[td, thGlobal]}>
+            {insertCommas(+totalConfirmed )}
+          </TD>
+          <TD {theme} style={[td, thGlobal]}>{totalDeaths}</TD>
+          <TD
+            {theme}
+            style={[td, thGlobal]}>
+            +{insertCommas(totalDeathsDay)} <span class={pctSpan}>(+{Math.round(totalDeathsDayPct)}%) Day</span>{@html '<br>'}
+           +{insertCommas(totalDeathsWeek)} <span class={pctSpan}>(+{Math.round(totalDeathsWeekPct)}%) Week</span> 
           </TD>
         </TR>
       {/if}
@@ -301,17 +324,19 @@
                 {String(JSON.stringify(sData[item].name)).replace(/"/g, '')}
               </TD>
               <TD style={td}>
-                {insertCommas(+sData[item].cases - +sData[item].deaths)}
+                {insertCommas(+sData[item].cases.total - +sData[item].deaths.total)}
               </TD>
-              <TD style={td}>{insertCommas(+sData[item].cases)}</TD>
-              <TD style={td}>{insertCommas(+sData[item].deaths)}</TD>
-              <TD
-                {theme}
-                style={[td, (+sData[item].deaths / +sData[item].cases) * 100 > total_fatality_rate && lRed, (+sData[item].deaths / +sData[item].cases) * 100 < total_fatality_rate && lGreen]}>
-                {((+sData[item].deaths / +sData[item].cases) * 100).toFixed(2)}%
+              <TD style={td}>
+                +{insertCommas(sData[item].cases.dayChange - sData[item].deaths.dayChange)} <span class={pctSpan}>(+{Math.round(percentChange((sData[item].cases.dayChange - sData[item].deaths.dayChange),(sData[item].cases.total - sData[item].deaths.total)))}%) Day</span> {@html '<br>'}
+            +{insertCommas(sData[item].cases.weekChange - sData[item].deaths.weekChange)} <span class={pctSpan}>(+{Math.round(percentChange((sData[item].cases.weekChange - sData[item].deaths.weekChange),(sData[item].cases.total - sData[item].deaths.total)))}%) Week</span>
               </TD>
-              <TD style={td}>0.0%</TD>
-              <TD {theme} style={td}>0</TD>
+              <TD style={td}>{insertCommas(+sData[item].cases.total)}</TD>
+              <TD style={td}>{insertCommas(+sData[item].deaths.total)}</TD>
+              <TD style={td}>
+                +{insertCommas(sData[item].deaths.dayChange)} <span class={pctSpan}>(+{Math.round(percentChange((sData[item].deaths.dayChange),(sData[item].deaths.total)))}%) Day</span> {@html '<br>'}
+            Week: +{insertCommas(sData[item].deaths.weekChange)} <span class={pctSpan}>(+{Math.round(percentChange((sData[item].deaths.weekChange),(sData[item].deaths.total)))}%) Week</span>
+              </TD>
+              
             </TR>
           {/if}
         {/each}

@@ -23,7 +23,6 @@
   // const CACountyURL =
   //  'https://files.sfchronicle.com/project-feeds/covid19_us_cases_ca_by_county_.json'
 
-  const CA_COUNTY_URL_V2 = process.env.CA_COUNTY_URL_V2
   const API_URL = process.env.API_URL
   const API_CA_COUNTY_FILE = process.env.API_CA_COUNTY_FILE
 
