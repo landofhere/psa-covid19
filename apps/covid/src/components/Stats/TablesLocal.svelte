@@ -36,7 +36,6 @@
   export let statsGlobal
   let dataCountry
   let dataRegion
-  $: console.log('TableRegional:', statsGlobal, local, error, loading)
 
   $: data = statsGlobal
   $: longLength = local.addressNames.long.length
@@ -70,20 +69,10 @@
     }
   }
   $: {
-    console.log('TR status', error, loading, data)
     if (!error && !loading && data) {
       getCountryData(data.data)
     }
   }
-
-  $: console.log(
-    'TableRegional Names:',
-    country,
-    countryLong,
-    region,
-    regionShort,
-    county,
-  )
 
   $: countryData = dataCountry || false
   $: rawRegionData = countryData ? countryData.SubRegion || false : false
@@ -93,7 +82,7 @@
   $: regionDataLoaded = false
   let getRegionData = data => {
     regionData = internalizeCountryName(data)
-    console.log('regionData:', regionData)
+    // console.log('regionData:', regionData)
     regionDataLoaded = true
     return
   }

@@ -220,7 +220,7 @@
     totalActiveWeekPct = percentChange(totalActiveWeek, totalActive)
     totalRecovered = 0
 
-    console.log('RegionStats: ', subRegionData.data)
+    // console.log('RegionStats: ', subRegionData.data)
 
     totalFatalityRate = (regionTotals[0].deaths / regionTotals[0].cases) * 100
     totalRecoveryRate = 0.0

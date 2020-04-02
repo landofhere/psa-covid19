@@ -123,8 +123,8 @@
       available = true
     }
 
-    cntyConfirmed = tempCnty.cases.total || 0
-    cntyDeaths = tempCnty.deaths.total || 0
+    cntyConfirmed = tempCnty.confirmed || 0
+    cntyDeaths = tempCnty.deaths || 0
     cntyFatalityRate = (cntyDeaths / cntyConfirmed) * 100 || 0
   })
 </script>
@@ -155,7 +155,7 @@
     <Box style={overviewBottomBox}>
       <Text style={btmh6}>
         {@html `Unfortunately, recoveries are not being tracked or are unavailable at this time at
-        the county level. This means we cannot track progress locally. Thus, the local goal is to keep <strong># of confirmed</strong> as low as possible.`}
+        the state and county level. This means we cannot track progress locally. Thus, the local goal is to keep <strong># of confirmed</strong> as low as possible.`}
       </Text>
     </Box>
   </Flex>

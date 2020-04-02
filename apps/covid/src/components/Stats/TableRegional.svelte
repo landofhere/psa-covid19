@@ -120,7 +120,7 @@
   let total_fatality_rate
   let total_recovery_rate
 
-  $: console.log('TableRegional:', countryData, regionData, loading)
+  // $: console.log('TableRegional:', countryData, regionData, loading)
   $: sData = []
   $: sortedSymb = '&nbsp;▼'
 
