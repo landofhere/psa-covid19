@@ -4,13 +4,15 @@
   "description": "Scripts for manipulating covid-19 data",
   "main": "src/index",
   "scripts": {
-    "dev": "NODE_ENV=development yarn type-watch && yarn watch",
+    "dev": "NODE_ENV=development yarn type-watch & yarn watch",
     "watch": "babel-watch src --out-dir dist --extensions '.ts,.js' --watch",
     "start": "NODE_ENV=production node ./dist/src/index.js",
     "type-watch": "tsc-watch  -p tsconfig.json --noEmit",
     "type-check": "tsc  -p tsconfig.json --noEmit",
     "build": "yarn clean && tsc -p tsconfig.json",
-    "clean": "rm -rf ./dist"
+    "clean": "rm -rf ./dist",
+    "lint": "yarn type-check && eslint src --ext .js,.ts",
+    "lint:fix": "yarn type-check && eslint src --ext .js,.ts --quiet --fix "
   },
   "author": "Barry Low <barry@studiobear.co>",
   "license": "MIT",
@@ -29,7 +31,12 @@
     "@babel/register": "^7.9.0",
     "@types/ftps": "^1.1.0",
     "@types/node": "^13.9.8",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
     "babel-watch": "^7.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-prettier": "^3.1.2",
     "prettier": "1.19.1",
     "tsc-watch": "^4.2.3",
     "typescript": "^3.8.3"

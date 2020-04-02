@@ -6,7 +6,7 @@ import fs from 'fs'
 const CACountyURL =
   'https://files.sfchronicle.com/project-feeds/covid19_us_cases_ca_by_county_.json'
 
-export const getUS_CA_County = async () =>
+export const getUSCACounty = async () =>
   axios({
     method: 'get',
     url:
@@ -14,35 +14,44 @@ export const getUS_CA_County = async () =>
   })
     .then(async resp => resp.data)
     .catch(err => {
-      throw new Error(`getUS_CA_County: ${err}`)
+      throw new Error(`getUSCACounty: ${err}`)
     })
 
-export const parseUS_CA_County = async (data:any) =>
+export const parseUSCACounty = async (data: any) =>
   calcC19CACountyStats(data, 'CALIFORNIA', { numberfy: true })
     .then(async resp => resp)
     .catch(err => {
-      throw new Error(`getUS_CA_County: ${err}`)
+      throw new Error(`getUSCACounty: ${err}`)
     })
 
-export const parseUS_CA_County_NoTime = async (data:any) =>
+export const parseUSCACountyNoTime = async (data: any) =>
   calcC19CACountyStatsV2(data, 'CALIFORNIA', { numberfy: true, time: false })
     .then(async resp => resp)
     .catch(err => {
-      throw new Error(`getUS_CA_County: ${err}`)
+      throw new Error(`getUSCACounty: ${err}`)
     })
 
-interface ICountyData {
+export const writeUSCACounty = async (data: any, filePath: fs.PathLike) =>
+  writeFile(
+    JSON.stringify(data, null, 2),
+    () => {
+      return 'Success'
+    },
+    filePath,
+  )
+
+interface CountyData {
   name: string
   cases: any
   deaths: any
 }
 
-export const parseUS_CA_County_Indv = async (data:any) =>
+export const parseUSCACountyIndv = async (data: any) =>
   calcC19CACountyStatsV2(data, 'CALIFORNIA', { numberfy: true, time: true })
     .then(async resp => {
       const tmpData = resp.data ? resp.data : null
       if (tmpData.length > 0) {
-        tmpData.map((c:ICountyData) => {
+        tmpData.map((c: CountyData) => {
           const cntyName = c.name
           const cntyNameShort = cntyName.replace(' County', '')
           const cntyUrl = cntyNameShort
@@ -55,19 +64,10 @@ export const parseUS_CA_County_Indv = async (data:any) =>
             updated: resp.updated,
           }
           const filePath = `./public/covid19_US_CA_County_${cntyUrl}.json`
-          writeUS_CA_County(countyData, filePath)
+          writeUSCACounty(countyData, filePath)
         })
       }
     })
     .catch(err => {
-      throw new Error(`getUS_CA_County: ${err}`)
+      throw new Error(`getUSCACounty: ${err}`)
     })
-
-export const writeUS_CA_County = async (data: any, filePath: fs.PathLike) =>
-  writeFile(
-    JSON.stringify(data, null, 2),
-    () => {
-      return 'Success'
-    },
-    filePath,
-  )

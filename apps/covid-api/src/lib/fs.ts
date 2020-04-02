@@ -1,17 +1,19 @@
 import fs from 'fs'
 const dataPath = '../../public/sample.json'
 
-export const readFile= (
+export const readFile = (
   callback: (data: Buffer) => string | Buffer,
   returnJson: boolean,
   filePath: fs.PathLike,
   encoding?: null | undefined,
-): void  => {
-  fs.readFile(filePath, {encoding}, (err, data: Buffer) => {
+): void => {
+  fs.readFile(filePath, { encoding }, (err, data: Buffer) => {
     if (err) {
       throw err
     }
-    callback(returnJson && Buffer.isBuffer(data) ?JSON.parse(data.toString()) : data)
+    callback(
+      returnJson && Buffer.isBuffer(data) ? JSON.parse(data.toString()) : data,
+    )
   })
 }
 
