@@ -1,4 +1,4 @@
-import { objDateToArray, internalizeName } from './index'
+import { objDateToArray, internalizeName, calcChange } from './index'
 
 interface DefaultOpts {
   numberfy?: boolean
@@ -7,29 +7,58 @@ interface DefaultOpts {
 
 interface Category {
   total: string | number
-  time: any[]
+  dayChange: number
+  twoDayChange: number
+  weekChange: number
+  time?: any[]
 }
-
-const defaultOpts:DefaultOpts = {
+interface ItemChange {
+  day: number
+  week: number
+  twoDay: number
+}
+const defaultOpts: DefaultOpts = {
   numberfy: false,
   time: true,
 }
 
-const parseC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => {
+const parseC19CACountyStats = async (
+  d: any,
+  region: string,
+  opts: DefaultOpts,
+) => {
   let combined: any = {}
   return Promise.all(
     d.map(async (item: any) => {
       let itemData = {}
       let itemCategory = {}
       let dateItems = []
-      let category: string | Category = { total: '', time: [] }
+      const category: string | Category = {
+        total: '',
+        dayChange: 0,
+        twoDayChange: 0,
+        weekChange: 0,
+        time: [],
+      }
 
+      dateItems = await objDateToArray(item, opts.numberfy)
+      const itemChange: ItemChange = await calcChange(dateItems, [
+        { day: 1 },
+        { twoDay: 2 },
+        { week: 7 },
+      ])
+      // console.log('parse calcChange', itemChange)
       if (opts.time) {
-        dateItems = await objDateToArray(item, opts.numberfy)
         category.total = opts.numberfy ? +item.TOTALS : item.TOTALS
+        category.dayChange = itemChange.day
+        category.twoDayChange = itemChange.twoDay
+        category.weekChange = itemChange.week
         category.time = dateItems
       } else {
-        category = opts.numberfy ? +item.TOTALS : item.TOTALS
+        category.total = opts.numberfy ? +item.TOTALS : item.TOTALS
+        category.dayChange = itemChange.day
+        category.twoDayChange = itemChange.twoDay
+        category.weekChange = itemChange.week
       }
       itemCategory = { [item.CATEGORY]: category }
       if (item.c2p_pubdate)
@@ -49,7 +78,12 @@ const parseC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => 
     return combined
   })
 }
-export const calcC19CACountyStats = async (d:any, region:string, opts:DefaultOpts) => {
+
+export const calcC19CACountyStats = async (
+  d: any,
+  region: string,
+  opts: DefaultOpts,
+) => {
   const parseData = await parseC19CACountyStats(d, region, {
     ...defaultOpts,
     ...opts,
@@ -62,28 +96,36 @@ export const calcC19CACountyStats = async (d:any, region:string, opts:DefaultOpt
   return parseData
 }
 
-interface ICACountyStatsV2{
+interface CACountyStatsV2 {
   updated?: string
   data?: any
   [key: string]: any
 }
 
-type CalcC19CACountyStatsV2 = (d:any, region:string, opts:DefaultOpts) => Promise<ICACountyStatsV2>
+type CalcC19CACountyStatsV2 = (
+  d: any,
+  region: string,
+  opts: DefaultOpts,
+) => Promise<CACountyStatsV2>
 
-export const calcC19CACountyStatsV2: CalcC19CACountyStatsV2 = async (d, region, opts) => {
+export const calcC19CACountyStatsV2: CalcC19CACountyStatsV2 = async (
+  d,
+  region,
+  opts,
+) => {
   const parseData = await parseC19CACountyStats(d, region, {
     ...defaultOpts,
     ...opts,
   })
     .then((res: any) => {
-      let tmpUpdated = res.updated
+      const tmpUpdated = res.updated
       delete res.updated
-      let data = internalizeName(res)
+      const data = internalizeName(res)
       return { updated: tmpUpdated, data }
     })
     .catch((err: any) => {
       console.log('calcStats err: ', err)
-      return {error: 'ERROR!'}
+      return { error: 'ERROR!' }
     })
   return parseData
 }
