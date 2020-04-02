@@ -1,5 +1,11 @@
 export * from './global'
 export * from './county'
+export * from './us-states'
+
+export interface DefaultOpts {
+  numberfy?: boolean
+  time?: boolean
+}
 
 interface FatalityRate {
   Deaths: number
