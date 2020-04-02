@@ -60,7 +60,7 @@ const parseC19CACountyStats = async (
         category.twoDayChange = itemChange.twoDay
         category.weekChange = itemChange.week
       }
-      let catKay = item.CATEGORY === 'cases' ? 'confirmed' : 'deaths'
+      const catKay = item.CATEGORY === 'cases' ? 'confirmed' : 'deaths'
       itemCategory = {
         [catKay]: category.total,
         [`${catKay}DayChange`]: category.dayChange,
@@ -77,7 +77,7 @@ const parseC19CACountyStats = async (
       } else {
         itemData = { [item.GEOGRAPHY]: itemCategory }
       }
-      console.log('calcCountyItem: ', itemData)
+      // console.log('calcCountyItem: ', itemData)
       combined = { ...combined, ...itemData }
     }),
   ).then(res => {

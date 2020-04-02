@@ -66,7 +66,7 @@ export const parseUSCACountyIndv = async (data: any) =>
           const countyData = {
             name: cntyNameShort,
             updated: resp.updated,
-            ...c
+            ...c,
           }
           const filePath = `./public/covid19_US_CA_County_${cntyUrl}.json`
           writeUSCACounty(countyData, filePath)

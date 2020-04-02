@@ -50,10 +50,10 @@
   $: lGreen = { bg: theme.colors.lightGreen }
   $: lPurple = { bg: theme.colors.lightPurple }
 
-  const tableGlobal = { minw: '30rem' }
-  const colCountry = { w: '20%' }
-  const colStat = { w: '10%' }
-  const colChange = { w: '23%' }
+  const tableGlobal = { minw: '35rem' }
+  const colCountry = { w: '16%' }
+  const colStat = { w: '12%' }
+  const colChange = { w: '24%' }
 
   $: th = {
     pos: 'sticky',
@@ -203,27 +203,24 @@
     let regionTotals = subRegionData.data.filter(
       reg => reg.name === regionUpper,
     )
-    totalConfirmed = regionTotals[0].cases.total
-    totalConfirmedDay = regionTotals[0].cases.dayChange
-    totalConfirmedWeek = regionTotals[0].cases.weekChange
-    totalDeaths = regionTotals[0].deaths.total
-    totalDeathsDay = regionTotals[0].deaths.dayChange
-    totalDeathsWeek = regionTotals[0].deaths.weekChange
+    totalConfirmed = regionTotals[0].confirmed
+    totalConfirmedDay = regionTotals[0].confirmedDayChange
+    totalConfirmedWeek = regionTotals[0].confirmedWeekChange
+    totalDeaths = regionTotals[0].deaths
+    totalDeathsDay = regionTotals[0].deathsDayChange
+    totalDeathsWeek = regionTotals[0].deathsWeekChange
     totalDeathsDayPct = percentChange(totalDeathsDay, totalDeaths)
     totalDeathsWeekPct = percentChange(totalDeathsWeek, totalDeaths)
     totalActive = totalConfirmed - totalDeaths
     totalActiveDay =
-      regionTotals[0].cases.dayChange - regionTotals[0].deaths.dayChange
+      regionTotals[0].confirmedDayChange - regionTotals[0].deathsDayChange
     totalActiveWeek =
-      regionTotals[0].cases.weekChange - regionTotals[0].deaths.weekChange
+      regionTotals[0].confirmedWeekChange - regionTotals[0].deathsWeekChange
     totalActiveDayPct = percentChange(totalActiveDay, totalActive)
     totalActiveWeekPct = percentChange(totalActiveWeek, totalActive)
     totalRecovered = 0
 
-    console.log(
-      'RegionStats: ',
-      subRegionData.data
-    )
+    console.log('RegionStats: ', subRegionData.data)
 
     totalFatalityRate = (regionTotals[0].deaths / regionTotals[0].cases) * 100
     totalRecoveryRate = 0.0
@@ -239,12 +236,12 @@
 <Box style={tableContainer}>
   <Table fixed style={tableGlobal}>
     <THead as="colGroup">
-      <col style={colCountry} />
-      <col style={colStat} />
-      <col style={colChange} />
-      <col style={colStat} />
-      <col style={colStat} />
-      <col style={colChange} />
+      <THead as="col" style={colCountry} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colChange} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colChange} />
     </THead>
     <THead as="thead" style={tableHeader}>
       <TR>
@@ -346,33 +343,33 @@
                 {String(JSON.stringify(sData[item].name)).replace(/"/g, '')}
               </TD>
               <TD style={td}>
-                {insertCommas(+sData[item].cases.total - +sData[item].deaths.total)}
+                {insertCommas(+sData[item].confirmed - +sData[item].deaths)}
               </TD>
               <TD style={td}>
-                +{insertCommas(sData[item].cases.dayChange - sData[item].deaths.dayChange)}
+                +{insertCommas(sData[item].confirmedDayChange - sData[item].deathsDayChange)}
                 <span class={pctSpan}>
-                  (+{Math.round(percentChange(sData[item].cases.dayChange - sData[item].deaths.dayChange, sData[item].cases.total - sData[item].deaths.total))}%)
+                  (+{Math.round(percentChange(sData[item].confirmedDayChange - sData[item].deathsDayChange, sData[item].confirmed - sData[item].deaths))}%)
                   Day
                 </span>
                 {@html '<br>'}
-                +{insertCommas(sData[item].cases.weekChange - sData[item].deaths.weekChange)}
+                +{insertCommas(sData[item].confirmedWeekChange - sData[item].deathsWeekChange)}
                 <span class={pctSpan}>
-                  (+{Math.round(percentChange(sData[item].cases.weekChange - sData[item].deaths.weekChange, sData[item].cases.total - sData[item].deaths.total))}%)
+                  (+{Math.round(percentChange(sData[item].confirmedWeekChange - sData[item].deathsWeekChange, sData[item].confirmed - sData[item].deaths))}%)
                   Week
                 </span>
               </TD>
-              <TD style={td}>{insertCommas(+sData[item].cases.total)}</TD>
-              <TD style={td}>{insertCommas(+sData[item].deaths.total)}</TD>
+              <TD style={td}>{insertCommas(+sData[item].confirmed)}</TD>
+              <TD style={td}>{insertCommas(+sData[item].deaths)}</TD>
               <TD style={td}>
-                +{insertCommas(sData[item].deaths.dayChange)}
+                +{insertCommas(sData[item].deathsDayChange)}
                 <span class={pctSpan}>
-                  (+{Math.round(percentChange(sData[item].deaths.dayChange, sData[item].deaths.total))}%)
+                  (+{Math.round(percentChange(sData[item].deathsDayChange, sData[item].deaths))}%)
                   Day
                 </span>
                 {@html '<br>'}
-                Week: +{insertCommas(sData[item].deaths.weekChange)}
+                +{insertCommas(sData[item].deathsWeekChange)}
                 <span class={pctSpan}>
-                  (+{Math.round(percentChange(sData[item].deaths.weekChange, sData[item].deaths.total))}%)
+                  (+{Math.round(percentChange(sData[item].deathsWeekChange, sData[item].deaths))}%)
                   Week
                 </span>
               </TD>
