@@ -171,13 +171,13 @@
 <Box style={tableContainer}>
   <Table fixed style={tableGlobal}>
     <THead as="colGroup">
-      <col style={colCountry} />
-      <col style={colStat} />
-      <col style={colStat} />
-      <col style={colStat} />
-      <col style={colStat} />
-      <col style={colStat} />
-      <col style={colStat} />
+      <THead as="col" style={colCountry} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colStat} />
+      <THead as="col" style={colStat} />
     </THead>
     <THead as="thead" style={tableHeader}>
       <TR>
