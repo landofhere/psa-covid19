@@ -50,16 +50,16 @@ export const objDateToArray = async (obj: ObjDateArray, numberfy = false) => {
 export const calcChange = (d: any[], spans: any[]): any => {
   let change: object = {}
   for (const period in spans) {
-    let tempValue: number = 0
+    let tempValue = 0
     const periodKeyObj: any[] = Object.keys(spans[period])
     const periodKey: string = periodKeyObj[0]
     const changeSpan = spans[period][periodKey]
     for (let i = 0; i < changeSpan; i++) {
-      const tmpVal: number[] = Object.values(d[i]) 
+      const tmpVal: number[] = Object.values(d[i])
       tempValue += tmpVal[0]
       // console.log(tempValue)
     }
-    change = {...change, [periodKey]: tempValue }
+    change = { ...change, [periodKey]: tempValue }
   }
   return change
 }

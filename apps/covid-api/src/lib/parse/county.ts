@@ -33,10 +33,20 @@ const parseC19CACountyStats = async (
       let itemData = {}
       let itemCategory = {}
       let dateItems = []
-      let category: string | Category = { total: '', dayChange: 0, twoDayChange: 0,weekChange: 0, time: [] }
+      const category: string | Category = {
+        total: '',
+        dayChange: 0,
+        twoDayChange: 0,
+        weekChange: 0,
+        time: [],
+      }
 
       dateItems = await objDateToArray(item, opts.numberfy)
-      const itemChange: ItemChange = await calcChange(dateItems, [{ day: 1 },{ twoDay: 2 }, { week: 7 }])
+      const itemChange: ItemChange = await calcChange(dateItems, [
+        { day: 1 },
+        { twoDay: 2 },
+        { week: 7 },
+      ])
       // console.log('parse calcChange', itemChange)
       if (opts.time) {
         category.total = opts.numberfy ? +item.TOTALS : item.TOTALS
