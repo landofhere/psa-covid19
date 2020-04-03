@@ -63,7 +63,8 @@ const job = new CronJob('0 * * * * *', function() {
 
 const job2 = new CronJob('0 */15 * * * *', function() {
   generateUSCACounty()
-  console.log('US_CA_County_NoTime data generated at ' + date.toString())
+  generateUSStates()
+  console.log('US States + CA Counties data generated at ' + date.toString())
 })
 
 if (process.env.NODE_ENV === 'production') {
