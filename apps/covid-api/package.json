@@ -70,9 +70,9 @@
       "src/**/*.test.ts"
     ],
     "typescript": {
-			"rewritePaths": {
-				"src/": "dist/src/"
-			}
-		}
+      "rewritePaths": {
+        "src/": "dist/src/"
+      }
+    }
   }
 }
