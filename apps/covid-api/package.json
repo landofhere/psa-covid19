@@ -4,7 +4,7 @@
   "description": "Scripts for manipulating covid-19 data",
   "main": "src/index",
   "scripts": {
-    "dev": "NODE_ENV=development yarn type-watch & yarn watch",
+    "dev": "NODE_ENV=development printf '\\33c\\e[3J' & yarn type-watch & yarn watch",
     "watch": "babel-watch src --out-dir dist --extensions '.ts,.js' --watch",
     "start": "NODE_ENV=production node ./dist/src/index.js",
     "type-watch": "tsc-watch  -p tsconfig.json --noEmit",
@@ -19,6 +19,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "cron": "^1.8.2",
+    "csvtojson": "^2.0.10",
     "dotenv": "^8.2.0",
     "ftps": "^1.1.1"
   },

@@ -1,5 +1,11 @@
 export * from './global'
 export * from './county'
+export * from './us-states'
+
+export interface DefaultOpts {
+  numberfy?: boolean
+  time?: boolean
+}
 
 interface FatalityRate {
   Deaths: number
@@ -60,6 +66,45 @@ export const calcChange = (d: any[], spans: any[]): any => {
       // console.log(tempValue)
     }
     change = { ...change, [periodKey]: tempValue }
+  }
+  return change
+}
+
+export const calcChangeCombinedSums = (d: any[], spans: any[]): any => {
+  let change: object = {}
+  for (const period in spans) {
+    let tempConfirmed = 0
+    let tempActive = 0
+    let tempDeaths = 0
+    let changedConfirmed = 0
+    let changedActive = 0
+    let changedDeaths = 0
+    const periodKeyObj: any[] = Object.keys(spans[period])
+    const periodKey: string = periodKeyObj[0]
+    const changeSpan =
+      d.length > spans[period][periodKey]
+        ? spans[period][periodKey]
+        : d.length - 1
+    for (let i = 0; i <= changeSpan; i++) {
+      const tmpVal: number[] = Object.values(d[i])
+      if (i > 0) {
+        changedConfirmed += tempConfirmed - tmpVal[1]
+        changedActive += tempActive - tmpVal[2]
+        changedDeaths += tempDeaths - tmpVal[3]
+      }
+      tempConfirmed = tmpVal[1]
+      tempActive = tmpVal[2]
+      tempDeaths = tmpVal[3]
+    }
+    change = {
+      ...change,
+      [periodKey]: {
+        confirmed: changedConfirmed,
+        active: changedActive,
+        deaths: changedDeaths,
+      },
+    }
+    // console.log('calcChange:', change)
   }
   return change
 }
