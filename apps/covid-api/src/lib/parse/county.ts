@@ -1,4 +1,9 @@
-import { objDateToArray, internalizeName, calcChange, DefaultOpts } from './index'
+import {
+  objDateToArray,
+  internalizeName,
+  calcChange,
+  DefaultOpts,
+} from './index'
 
 interface Category {
   total: string | number

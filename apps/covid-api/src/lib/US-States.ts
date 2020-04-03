@@ -14,8 +14,17 @@ export const getUSStates = async (filePath?: string) =>
     })
 
 export const parseUSStates = async (data: any) =>
-calcUSStates(data, { numberfy: true })
-  .then(async (resp:any) => resp)
-  .catch((err: any) => {
-    throw new Error(`getUSCACounty: ${err}`)
-  })
+  calcUSStates(data, { numberfy: true })
+    .then((resp: any) => resp)
+    .catch((err: any) => {
+      throw new Error(`getUSCACounty: ${err}`)
+    })
+
+export const writeUSStates = async (data: any, filePath: fs.PathLike) =>
+  writeFile(
+    JSON.stringify(data, null, 2),
+    () => {
+      return 'Success'
+    },
+    filePath,
+  )
