@@ -1,4 +1,4 @@
-import { DefaultOpts, internalizeName } from './index'
+import { DefaultOpts, internalizeName, calcChangeCombinedSums } from './index'
 
 interface USStates {
   updated?: string
@@ -34,6 +34,8 @@ export const parseUSStatesStats: parseUSSates = async (d, opts) => {
       confirmed: +item.cases,
       active: +item.cases - +item.deaths,
       deaths: +item.deaths,
+      confirmedDayChange: 0,
+      deathsDayChange: 0,
     }
     const itemTime = {
       date: item.date,
@@ -44,6 +46,14 @@ export const parseUSStatesStats: parseUSSates = async (d, opts) => {
     if (index === 0) combined.startDate = item.date
     combined.lastDate = item.date
     if (combined.hasOwnProperty(item.state)) {
+      if (combined[item.state].time.length > 0) {
+        const lastTimeItem =
+          combined[item.state].time.length > 0 &&
+          combined[item.state].time.slice(-1)
+        itemData.confirmedDayChange =
+          +itemData.confirmed - lastTimeItem[0].confirmed
+        itemData.deathsDayChange = +itemData.deaths - lastTimeItem[0].deaths
+      }
       combinedData = {
         [item.state]: {
           time:
@@ -67,22 +77,31 @@ export const procUSStates = async (d: any) => {
   const combined: any[] = []
   let confirmed = 0
   let deaths = 0
-  const lastConfirmed = 0
-  const lastDeaths = 0
-  const confirmedChange = 0
-  const confirmedDeaths = 0
+
   await d.map((item: any) => {
-    const lastTime = item.time.slice(-1)
-    const itemData = {
-      name: item.name,
-      confirmed: lastTime[0].confirmed,
-      active: lastTime[0].confirmed - lastTime[0].deaths,
-      deaths: lastTime[0].deaths,
-      time: item.time,
+    let change = {}
+    if (item.time.length > 0) {
+      const revTime = item.time.reverse()
+
+      change = calcChangeCombinedSums(revTime, [
+        { day: 1 },
+        { twoDay: 2 },
+        { week: 7 },
+      ])
+
+      const lastTime = item.time[0]
+      const itemData = {
+        name: item.name,
+        confirmed: lastTime.confirmed,
+        active: lastTime.confirmed - lastTime.deaths,
+        deaths: lastTime.deaths,
+        change,
+        time: revTime,
+      }
+      confirmed += lastTime.confirmed
+      deaths += lastTime.deaths
+      combined.push(itemData)
     }
-    confirmed += lastTime[0].confirmed
-    deaths += lastTime[0].deaths
-    combined.push(itemData)
   })
   // console.log('proc:', combined)
   return { confirmed, deaths, active: confirmed - deaths, data: combined }
