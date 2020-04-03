@@ -9,9 +9,10 @@ import {
   getUSStates,
   parseUSStates,
   writeUSStates,
+  gitUpdateSubmod,
+  gitInitSubmod,
 } from './lib'
 import { resolve } from 'path'
-import { exec } from 'child_process'
 
 const DATA_PATH_US_CA_COUNTY = './public/covid19_US_CA_County_V3.json'
 const DATA_PATH_US_STATES = './public/covid19_US_States.json'
@@ -40,25 +41,11 @@ const generateUSStates = async () => {
   )
 }
 
-const gitUpdateSubmod = async (subModPath?: string) => {
-  const { stdout, stderr } = await exec(
-    `git -C ${subModPath} pull origin master`,
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(`gitUpdateSubmod error: ${error}`)
-        return
-      }
-      console.log(`gitUpdateSubmod: ${stdout}`)
-      return
-    },
-  )
-}
-
 const date: Date = new Date()
-const job = new CronJob('0 * * * * *', function() {
+const job = new CronJob('0 */15 * * * *', function() {
   gitUpdateSubmod(SUBMOD_NYTIMES)
   gitUpdateSubmod(SUBMOD_CSSE)
-  console.log('US_CA_County data generated at ' + date.toString())
+  console.log('Submods updated at ' + date.toString())
 })
 
 const job2 = new CronJob('0 */15 * * * *', function() {
@@ -74,3 +61,5 @@ if (process.env.NODE_ENV === 'production') {
   generateUSCACounty()
   generateUSStates()
 }
+gitInitSubmod(SUBMOD_NYTIMES)
+gitInitSubmod(SUBMOD_CSSE)

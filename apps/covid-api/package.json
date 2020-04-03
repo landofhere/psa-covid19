@@ -5,14 +5,16 @@
   "main": "src/index",
   "scripts": {
     "dev": "NODE_ENV=development printf '\\33c\\e[3J' & yarn type-watch & yarn watch",
-    "watch": "babel-watch src --out-dir dist --extensions '.ts,.js' --watch",
+    "watch": "babel src --out-dir dist --extensions '.ts,.js' --watch",
     "start": "NODE_ENV=production node ./dist/src/index.js",
     "type-watch": "tsc-watch  -p tsconfig.json --noEmit",
     "type-check": "tsc  -p tsconfig.json --noEmit",
     "build": "yarn clean && tsc -p tsconfig.json",
     "clean": "rm -rf ./dist",
     "lint": "yarn type-check && eslint src --ext .js,.ts",
-    "lint:fix": "yarn type-check && eslint src --ext .js,.ts --quiet --fix "
+    "lint:fix": "yarn type-check && eslint src --ext .js,.ts --quiet --fix ",
+    "test": "yarn build && ava",
+    "test:watch": "yarn type-watch & yarn watch & yarn test --watch -u"
   },
   "author": "Barry Low <barry@studiobear.co>",
   "license": "MIT",
@@ -24,6 +26,8 @@
     "ftps": "^1.1.1"
   },
   "devDependencies": {
+    "@ava/babel": "^1.0.1",
+    "@ava/typescript": "^1.1.1",
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.9.0",
@@ -34,6 +38,7 @@
     "@types/node": "^13.9.8",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
+    "ava": "^3.5.2",
     "babel-watch": "^7.0.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
@@ -59,5 +64,15 @@
     "plugins": [
       "@babel/plugin-proposal-object-rest-spread"
     ]
+  },
+  "ava": {
+    "files": [
+      "src/**/*.test.ts"
+    ],
+    "typescript": {
+      "rewritePaths": {
+        "src/": "dist/src/"
+      }
+    }
   }
 }
