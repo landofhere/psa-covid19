@@ -31,6 +31,7 @@ export const parseUSStatesStats: parseUSSates = async (d, opts) => {
   await d.map((item: DataInUSStates, index: number) => {
     let combinedData = {}
     const itemData = {
+      fips: item.fips,
       confirmed: +item.cases,
       active: +item.cases - +item.deaths,
       deaths: +item.deaths,
@@ -56,6 +57,7 @@ export const parseUSStatesStats: parseUSSates = async (d, opts) => {
       }
       combinedData = {
         [item.state]: {
+          ...itemData,
           time:
             combined[item.state].time.length > 0 &&
             combined[item.state].time.concat(itemTime),
@@ -64,7 +66,6 @@ export const parseUSStatesStats: parseUSSates = async (d, opts) => {
     } else {
       combinedData = { [item.state]: { ...itemData, time: [itemTime] } }
     }
-    // console.log('calcCountyItem: ', itemData)
     combined = {
       ...combined,
       ...combinedData,
@@ -92,6 +93,7 @@ export const procUSStates = async (d: any) => {
       const lastTime = item.time[0]
       const itemData = {
         name: item.name,
+        fips: item.fips,
         confirmed: lastTime.confirmed,
         active: lastTime.confirmed - lastTime.deaths,
         deaths: lastTime.deaths,
@@ -113,7 +115,6 @@ export const calcUSStates: CalcUSSates = async (d, opts) => {
     ...opts,
   })
     .then(async (res: any) => {
-      // console.log('calc:', res)
       const tmpStartDate = res.startDate
       const tmpLastDate = res.lastDate
       delete res.startDate
