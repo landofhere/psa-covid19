@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte'
-  import {styled } from '@studiobear/designspek'
+  import { styled } from '@studiobear/designspek'
   import { Flex, Box, Heading, Text } from '@studiobear/designspek-components'
   import { calcC19CACountyStats, insertCommas, percentChange } from '../../libs'
   export let theme = $$props.theme || {}
@@ -185,12 +185,16 @@
   onMount(async function getData() {
     const respCnty = await fetch(`${API_CA_COUNTY_URL}${cntyUrl}.json`)
     let tempCnty = await respCnty.json()
-    console.log('V2 CA CNTY: ', tempCnty)
+    // console.log('V3 CA CNTY: ', tempCnty)
 
     if (region === 'California') {
       available = true
     }
-    if (tempCnty.hasOwnProperty('confirmedDayChange') && tempCnty.hasOwnProperty('deathsDayChange')) change = true
+    if (
+      tempCnty.hasOwnProperty('confirmedDayChange') &&
+      tempCnty.hasOwnProperty('deathsDayChange')
+    )
+      change = true
     cntyConfirmed = tempCnty.confirmed || 0
     cntyDeaths = tempCnty.deaths || 0
     cntyConfirmedDay = tempCnty.confirmedDayChange || 0

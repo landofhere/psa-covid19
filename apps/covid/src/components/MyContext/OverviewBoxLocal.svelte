@@ -197,10 +197,14 @@
     txtAlign: 'center',
     py: 0,
   }
+
   $: activeh2 = {
     fontSize: '4rem',
     color: theme.colors.background,
     my: '0.5rem',
+  }
+  $: ovh2 = {
+    fontSize: ['3rem', '3rem', '3.5rem', '4rem', '4rem'],
   }
 
   $: middleh6 = {
@@ -387,7 +391,7 @@
         </Box>
         <Flex style={BoxActiveChangeLower}>
           <Box style={ActiveChange1}>
-            <Heading as="h2" style={activeh2}>
+            <Heading as="h2" style={[activeh2, ovh2]}>
               {insertCommas(regActive)}
             </Heading>
           </Box>
