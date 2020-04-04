@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte'
   import { Flex, Box, Heading, Text } from '@studiobear/designspek-components'
-  import { calcC19CACountyStats, insertCommas } from '../libs'
+  import { calcC19CACountyStats, insertCommas } from '../../libs'
   export let theme = $$props.theme || {}
   export let county
   export let region

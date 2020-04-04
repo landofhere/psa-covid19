@@ -3,7 +3,7 @@
   import { Flex, Box, Heading, Text } from '@studiobear/designspek-components'
   import { styled } from '@studiobear/designspek'
   import OverviewBoxLocalCounty from './OverviewBoxLocalCounty.svelte'
-  import { insertCommas, capitalize, percentChange } from '../libs'
+  import { insertCommas, capitalize, percentChange } from '../../libs'
   export let theme = $$props.theme || {}
   export let data
   export let local

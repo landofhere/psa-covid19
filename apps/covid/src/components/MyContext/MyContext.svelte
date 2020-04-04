@@ -10,7 +10,7 @@
   import { GetContextFab, RevGeocode } from '../util'
   import Modal from '../Modal.svelte'
   import Loading from '../Loading.svelte'
-  import OverviewBoxLocal from '../OverviewBoxLocal.svelte'
+  import OverviewBoxLocal from './OverviewBoxLocal.svelte'
   import { insertCommas, getAddress, setStorageItem } from '../../libs'
   import { storeUserPrefs, lfUserPrefs } from '../../stores/userPrefs'
   export let theme = $$props.theme || {}
