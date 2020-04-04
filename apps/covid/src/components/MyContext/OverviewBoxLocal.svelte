@@ -3,7 +3,7 @@
   import { Flex, Box, Heading, Text } from '@studiobear/designspek-components'
   import { styled } from '@studiobear/designspek'
   import OverviewBoxLocalCounty from './OverviewBoxLocalCounty.svelte'
-  import { insertCommas, capitalize, percentChange } from '../libs'
+  import { insertCommas, capitalize, percentChange } from '../../libs'
   export let theme = $$props.theme || {}
   export let data
   export let local
@@ -197,10 +197,14 @@
     txtAlign: 'center',
     py: 0,
   }
+
   $: activeh2 = {
     fontSize: '4rem',
     color: theme.colors.background,
     my: '0.5rem',
+  }
+  $: ovh2 = {
+    fontSize: ['3rem', '3rem', '3.5rem', '4rem', '4rem'],
   }
 
   $: middleh6 = {
@@ -387,7 +391,7 @@
         </Box>
         <Flex style={BoxActiveChangeLower}>
           <Box style={ActiveChange1}>
-            <Heading as="h2" style={activeh2}>
+            <Heading as="h2" style={[activeh2, ovh2]}>
               {insertCommas(regActive)}
             </Heading>
           </Box>
@@ -448,16 +452,6 @@
             </Box>
           </Flex>
         </Flex>
-      </Flex>
-      <Flex style={overviewBottomBox}>
-        <Box style={overviewSingleBox}>
-          <Heading as="h6" style={btmh6}>{regionShort} Recovery Rate</Heading>
-          <Heading as="h4" style={btmh4}>{regRecoveryRate.toFixed(2)}%</Heading>
-        </Box>
-        <Box style={overviewSingleBox}>
-          <Heading as="h6" style={btmh6}>{regionShort} Fatality Rate</Heading>
-          <Heading as="h4" style={btmh4}>{regFatalityRate.toFixed(2)}%</Heading>
-        </Box>
       </Flex>
     {/if}
   {/if}
