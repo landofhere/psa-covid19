@@ -5,4 +5,4 @@ import Logo from './Logo.svelte'
 import Modal from './Modal.svelte'
 import Overlay from './Overlay.svelte'
 
-export {Icon, Icons, Loading, Logo, Modal, Overlay}
+export { Icon, Icons, Loading, Logo, Modal, Overlay }

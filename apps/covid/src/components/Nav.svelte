@@ -8,8 +8,8 @@
     Heading,
     Button,
   } from '@studiobear/designspek-components'
-  import {Icon, Overlay, Logo} from './shared'
-  import {SSR} from './util'
+  import { Icon, Overlay, Logo } from './shared'
+  import { SSR } from './util'
   import { theme } from '../theme'
   import storeUserPrefs from '../stores/userPrefs'
 

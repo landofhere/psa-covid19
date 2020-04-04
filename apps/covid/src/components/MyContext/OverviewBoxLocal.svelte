@@ -449,16 +449,6 @@
           </Flex>
         </Flex>
       </Flex>
-      <Flex style={overviewBottomBox}>
-        <Box style={overviewSingleBox}>
-          <Heading as="h6" style={btmh6}>{regionShort} Recovery Rate</Heading>
-          <Heading as="h4" style={btmh4}>{regRecoveryRate.toFixed(2)}%</Heading>
-        </Box>
-        <Box style={overviewSingleBox}>
-          <Heading as="h6" style={btmh6}>{regionShort} Fatality Rate</Heading>
-          <Heading as="h4" style={btmh4}>{regFatalityRate.toFixed(2)}%</Heading>
-        </Box>
-      </Flex>
     {/if}
   {/if}
   {#if region === 'California'}

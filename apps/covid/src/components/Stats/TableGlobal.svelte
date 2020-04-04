@@ -12,7 +12,7 @@
   import sortObjectsArray from 'sort-objects-array'
 
   import { fatalityRate, recoveryRate } from '../../libs'
-  import {Loading} from '../shared'
+  import { Loading } from '../shared'
   import {
     H2,
     H4,

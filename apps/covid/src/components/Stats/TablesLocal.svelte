@@ -16,7 +16,7 @@
     recoveryRate,
     internalizeCountryName,
   } from '../../libs'
-  import {Loading} from '../shared'
+  import { Loading } from '../shared'
   import {
     H2,
     H4,
