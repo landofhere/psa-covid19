@@ -8,16 +8,13 @@
     Heading,
     Button,
   } from '@studiobear/designspek-components'
-  import Icon from './Icon.svelte'
-  import Overlay from './Overlay.svelte'
+  import {Icon, Overlay, Logo} from './shared'
+  import {SSR} from './util'
   import { theme } from '../theme'
   import storeUserPrefs from '../stores/userPrefs'
 
   export let segment
   export let ssr
-
-  import Logo from './Logo.svelte'
-  import SSR from './styleSSR.svelte'
 
   let menuVisible = false
   let toTopVisible = true

@@ -2,7 +2,7 @@
   // import { onMount } from 'svelte'
   import { Flex, Box, Heading, Text } from '@studiobear/designspek-components'
   import { insertCommas } from '../libs'
-  import Loading from './Loading.svelte'
+  import {Loading} from './shared'
   export let theme = $$props.theme || {}
   export let ssr = $$props.ssr || {}
   export let overview
