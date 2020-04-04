@@ -1,4 +1,4 @@
-import { percentChange, percentChangeFromTotal} from '../stats'
+import { percentChange, percentChangeFromTotal } from '../stats'
 
 describe('percent change', () => {
   test('should return increase percentage', () => {
