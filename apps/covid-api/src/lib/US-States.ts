@@ -14,14 +14,14 @@ export const getUSStates = async (filePath?: string) =>
       throw new Error(`getUSStates: ${err}`)
     })
 
-  export const getUSStatesCT = async (url: string) =>
-    axios({ method: 'get', url })
-      .then(resp => resp.data)
-      .catch(err => {
-        throw new Error(`getUSStatesCT: ${err}`)
-      })
+export const getUSStatesCT = async (url: string) =>
+  axios({ method: 'get', url })
+    .then(resp => resp.data)
+    .catch(err => {
+      throw new Error(`getUSStatesCT: ${err}`)
+    })
 
-export const parseUSStates = async (data: any, data2: any) => 
+export const parseUSStates = async (data: any, data2: any) =>
   calcUSStates(data, data2, { numberfy: true })
     .then((resp: any) => resp)
     .catch((err: any) => {

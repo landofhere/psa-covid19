@@ -31,8 +31,8 @@ export const parseUSStatesStats: parseUSStates = async (d, d2, opts) => {
   }
   await d.map((item: DataInUSStates, index: number) => {
     let combinedData = {}
-    let stateAbbrev: string = 'N/A'
-    let stateCTData  = {
+    let stateAbbrev = 'N/A'
+    let stateCTData = {
       totalTestResults: 0,
       positive: 0,
       negative: 0,
@@ -49,19 +49,27 @@ export const parseUSStatesStats: parseUSStates = async (d, d2, opts) => {
     const stateName = item.state
 
     // Get State name abbreviation
-    const stateNamePos = stateNames.map((st:any) => st.name).indexOf(stateName);
-    stateAbbrev= stateNamePos !== -1 && stateNames[stateNamePos].hasOwnProperty('abbreviation') ? stateNames[stateNamePos].abbreviation : 'N/A'
+    const stateNamePos = stateNames.map((st: any) => st.name).indexOf(stateName)
+    stateAbbrev =
+      stateNamePos !== -1 &&
+      stateNames[stateNamePos].hasOwnProperty('abbreviation')
+        ? stateNames[stateNamePos].abbreviation
+        : 'N/A'
 
     // Get covidtracking.com data for that state
-    if(stateAbbrev){
-      const stateCTPos = d2.map((ctSt:any) => ctSt.state).indexOf(stateAbbrev);
+    if (stateAbbrev) {
+      const stateCTPos = d2.map((ctSt: any) => ctSt.state).indexOf(stateAbbrev)
       stateCTData = d2[stateCTPos]
     }
     // console.log('stateCTData: ', stateCTData)
-    const stateConfirmed = stateCTData.totalTestResults > +item.cases ? stateCTData.totalTestResults : +item.cases
-    const stateDeaths = stateCTData.deaths > +item.deaths ? stateCTData : +item.deaths
+    const stateConfirmed =
+      stateCTData.totalTestResults > +item.cases
+        ? stateCTData.totalTestResults
+        : +item.cases
+    const stateDeaths =
+      stateCTData.deaths > +item.deaths ? stateCTData : +item.deaths
     const stateRecovered = stateCTData.recovered > 0 ? stateCTData.recovered : 0
-    const stateActive= stateConfirmed - (+stateDeaths + +stateRecovered)
+    const stateActive = stateConfirmed - (+stateDeaths + +stateRecovered)
     // Defaults: Compare Data
     const itemData = {
       abbrev: stateAbbrev,
@@ -144,20 +152,19 @@ export const procUSStates = async (d: any) => {
         fips: item.fips,
         change,
         time: revTime,
-        
       }
       confirmed += item.confirmed
       deaths += item.deaths
       active += item.active
       recovered += item.recovered
-      combined.push({...itemData, ...item})
+      combined.push({ ...itemData, ...item })
     }
   })
   // console.log('proc:', combined)
   return { confirmed, deaths, active, recovered, data: combined }
 }
 
-export const calcUSStates: CalcUSStates = async (d, d2,  opts) => {
+export const calcUSStates: CalcUSStates = async (d, d2, opts) => {
   const calcData = await parseUSStatesStats(d, d2, {
     ...defaultOpts,
     ...opts,
