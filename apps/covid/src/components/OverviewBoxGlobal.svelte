@@ -2,7 +2,7 @@
   // import { onMount } from 'svelte'
   import { Flex, Box, Heading, Text } from '@studiobear/designspek-components'
   import { insertCommas } from '../libs'
-  import Loading from './Loading.svelte'
+  import { Loading } from './shared'
   export let theme = $$props.theme || {}
   export let ssr = $$props.ssr || {}
   export let overview
@@ -72,6 +72,9 @@
   $: middleh6 = {
     color: theme.colors.tertiary,
   }
+  $: ovh3 = {
+    fontSize: ['1.6rem', '1.6rem', '1.8rem', '1.8rem', '1.8rem'],
+  }
   $: recoverh3 = {
     color: theme.colors.green,
   }
@@ -122,19 +125,21 @@
   <Flex style={overviewMiddleBox} {ssr}>
     <Box style={overviewSingleBox} {ssr}>
       <Heading as="h6" style={middleh6} {ssr}>Recoveries</Heading>
-      <Heading as="h3" style={recoverh3} {ssr}>
+      <Heading as="h3" style={[recoverh3, ovh3]} {ssr}>
         {insertCommas(recovered)}
       </Heading>
     </Box>
     <Box style={overviewSingleBox} {ssr}>
       <Heading as="h6" style={middleh6} {ssr}>Confirmed</Heading>
-      <Heading as="h3" style={confirmh3} {ssr}>
+      <Heading as="h3" style={[confirmh3, ovh3]} {ssr}>
         {insertCommas(confirmed)}
       </Heading>
     </Box>
     <Box style={overviewSingleBox} {ssr}>
       <Heading as="h6" style={middleh6} {ssr}>Deaths</Heading>
-      <Heading as="h3" style={deathh3} {ssr}>{insertCommas(deaths)}</Heading>
+      <Heading as="h3" style={[deathh3, ovh3]} {ssr}>
+        {insertCommas(deaths)}
+      </Heading>
     </Box>
   </Flex>
   <Flex style={overviewBottomBox} {ssr}>

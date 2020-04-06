@@ -7,6 +7,7 @@ import {
   parseUSCACountyIndv,
   ftpFile,
   getUSStates,
+  getUSStatesCT,
   parseUSStates,
   writeUSStates,
   gitUpdateSubmod,
@@ -19,6 +20,7 @@ const DATA_PATH_US_STATES = './public/covid19_US_States.json'
 const US_STATES_PATH = resolve('../../sharedLib/covid-19-data/us-states.csv')
 const SUBMOD_NYTIMES = '../../sharedLib/covid-19-data '
 const SUBMOD_CSSE = '../../sharedLib/COVID-19 '
+const US_TESTING_STATES = 'https://covidtracking.com/api/v1/states/current.json'
 
 const generateUSCACounty = async () => {
   const data = await getUSCACounty()
@@ -33,7 +35,8 @@ const generateUSCACounty = async () => {
 
 const generateUSStates = async () => {
   const data = await getUSStates(US_STATES_PATH)
-  const parsed = await parseUSStates(data)
+  const data2 = await getUSStatesCT(US_TESTING_STATES)
+  const parsed = await parseUSStates(data, data2)
   return writeUSStates(parsed, DATA_PATH_US_STATES).then(() =>
     process.env.NODE_ENV === 'production'
       ? ftpFile()
@@ -53,7 +56,7 @@ const job2 = new CronJob('0 */15 * * * *', function() {
   generateUSStates()
   console.log('US States + CA Counties data generated at ' + date.toString())
 })
-
+console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
   job.start()
   job2.start()

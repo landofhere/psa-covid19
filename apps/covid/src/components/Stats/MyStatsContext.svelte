@@ -7,8 +7,7 @@
     Text,
   } from '@studiobear/designspek-components'
   import { GetContextFab, RevGeocode } from '../util'
-  import Modal from '../Modal.svelte'
-  import Loading from '../Loading.svelte'
+  import { Modal, Loading } from '../shared'
   import TablesLocal from './TablesLocal.svelte'
   import { insertCommas, getAddress, setStorageItem } from '../../libs'
   import { storeUserPrefs, lfUserPrefs } from '../../stores/userPrefs'

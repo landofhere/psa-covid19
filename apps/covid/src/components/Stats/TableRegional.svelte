@@ -12,7 +12,7 @@
   import sortObjectsArray from 'sort-objects-array'
 
   import { fatalityRate, recoveryRate, insertCommas } from '../../libs'
-  import Loading from '../Loading.svelte'
+  import { Loading } from '../shared'
   import {
     H2,
     H4,
