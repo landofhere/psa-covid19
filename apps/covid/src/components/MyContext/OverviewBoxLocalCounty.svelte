@@ -228,11 +228,15 @@
             <Box style={MiddleChange1}>
               <Heading as="h4" style={confirmh4}>
                 +{insertCommas(cntyConfirmedDay)}
-                <span class={spanh4}>(+{cntyConfirmedDayPct.toFixed(2)}%) Day</span>
+                <span class={spanh4}>
+                  (+{cntyConfirmedDayPct.toFixed(2)}%) Day
+                </span>
               </Heading>
               <Heading as="h4" style={confirmh4}>
                 +{insertCommas(cntyConfirmedWeek)}
-                <span class={spanh4}>(+{cntyConfirmedWeekPct.toFixed(2)}%) Week</span>
+                <span class={spanh4}>
+                  (+{cntyConfirmedWeekPct.toFixed(2)}%) Week
+                </span>
               </Heading>
             </Box>
           </Flex>
@@ -250,11 +254,15 @@
             <Box style={MiddleChange2}>
               <Heading as="h4" style={deathsh4}>
                 +{insertCommas(cntyDeathsDay)}
-                <span class={spanh4}>(+{cntyDeathsDayPct.toFixed(2)}%) Day</span>
+                <span class={spanh4}>
+                  (+{cntyDeathsDayPct.toFixed(2)}%) Day
+                </span>
               </Heading>
               <Heading as="h4" style={deathsh4}>
                 +{insertCommas(cntyDeathsWeek)}
-                <span class={spanh4}>(+{cntyDeathsWeekPct.toFixed(2)}%) Week</span>
+                <span class={spanh4}>
+                  (+{cntyDeathsWeekPct.toFixed(2)}%) Week
+                </span>
               </Heading>
             </Box>
           </Flex>

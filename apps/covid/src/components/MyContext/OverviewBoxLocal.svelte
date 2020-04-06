@@ -294,16 +294,17 @@
     temprows: [
       '[row1-start] auto [row1-end] auto [row2-end] auto [row-end]',
       '[row1-start] auto [row1-end] auto [row2-end] auto [row-end]',
-      '[row1-start] auto [row1-end] auto [row-end]',
+      '[row1-start] auto [row1-end] auto [row2-end] auto [row-end]',
     ],
     gridareas: [
       '"header header" "main1" "main2" "footer footer"',
       '"header header" "main1 main2" "footer footer"',
-      '"header footer" "main1 main2"',
+      '"header header" "main1 main2" "footer footer"',
     ],
+    w: '100%',
   }
   let gridRTch = {
-    p: '0.25rem',
+    p: ['0.25rem', '0.25rem', '0.5rem', '0.75rem', '0.75rem'],
   }
 
   let rtHead = {
@@ -325,28 +326,27 @@
     color: theme.colors.quaternary,
     fontWeight: 400,
     txtTran: 'uppercase',
-    lineHeight: '1.2rem'
+    lineHeight: '1.2rem',
   }
   $: gridTxt = {
     txtAlign: 'center',
     color: theme.colors.text,
-    m: 0
+    m: 0,
   }
   $: gridTxtLg = {
     txtAlign: 'center',
     color: theme.colors.text,
-    m: 0
+    m: 0,
   }
 
   $: gridBorderTop = {
     bt: '1px solid',
-    brdCol: theme.colors.quaternary
+    brdCol: theme.colors.quaternary,
   }
   let gridLabel = {
     fontSize: '0.8rem',
-    txtTran: 'uppercase'
+    txtTran: 'uppercase',
   }
-
 
   const API_URL = process.env.API_URL
   const API_CA_COUNTY_FILE = process.env.API_CA_COUNTY_FILE
@@ -406,7 +406,7 @@
         regActiveWeekChangePct = Math.round(
           percentChange(regActiveWeekChange, regActive),
         )
-        
+
         const stateCTPos = tempCT.data.map(ctSt => ctSt.name).indexOf(regName)
         const stateCTData = tempCT.data[stateCTPos]
 
@@ -471,30 +471,44 @@
       <Grid style={[gridRTch, rtMain1]}>
         <Heading as="h6" style={gridh6}>Test Stats</Heading>
         <Text style={gridTxt}>
-          <Text as="span" style={gridLabel}>positive:</Text> {insertCommas(cntryTstPos)} 
+          <Text as="span" style={gridLabel}>positive:</Text>
+          {insertCommas(cntryTstPos)}
           <br />
-          <Text as="span" style={gridLabel}>negative:</Text> {insertCommas(cntryTstNeg)}
+          <Text as="span" style={gridLabel}>negative:</Text>
+          {insertCommas(cntryTstNeg)}
           <br />
-          <Text as="span" style={gridLabel}>Pending:</Text> {insertCommas(cntryTstPen)}
+          <Text as="span" style={gridLabel}>Pending:</Text>
+          {insertCommas(cntryTstPen)}
         </Text>
         <Text style={[gridTxt, gridBorderTop]}>
-          <Text as="span" style={gridLabel}>Administered (All-time):</Text> {insertCommas(cntryTstTot)}
+          <Text as="span" style={gridLabel}>Administered (All-time):</Text>
+          {insertCommas(cntryTstTot)}
         </Text>
       </Grid>
       <Grid style={[gridRTch, rtMain2]}>
         <Heading as="h6" style={gridh6}>Currently</Heading>
         <Text style={gridTxt}>
-          <Text as="span" style={gridLabel}>In hospital:</Text> {insertCommas(cntryHspCur)}
+          <Text as="span" style={gridLabel}>In hospital:</Text>
+          {insertCommas(cntryHspCur)}
           <br />
-          <Text as="span" style={gridLabel}>In ICU:</Text> {insertCommas(cntryIcuCur)}
+          <Text as="span" style={gridLabel}>In ICU:</Text>
+          {insertCommas(cntryIcuCur)}
           <br />
-          <Text as="span" style={gridLabel}>On Ventilator:</Text> {insertCommas(cntryVntCur)}
+          <Text as="span" style={gridLabel}>On Ventilator:</Text>
+          {insertCommas(cntryVntCur)}
         </Text>
         <Text style={[gridTxt, gridBorderTop]}>
-          <Text as="span" style={gridLabel}>Hospitalized (All-time):</Text> {insertCommas(cntryHspTot)}
+          <Text as="span" style={gridLabel}>Hospitalized (All-time):</Text>
+          {insertCommas(cntryHspTot)}
         </Text>
       </Grid>
-      <Grid style={[gridRTch, rtFoot]}><Text>Testing & Treatment stats are updated daily at 4EST and are originally  sourced from public health authorities at all levels. Data quality fluctuates from state to state.</Text></Grid>
+      <Grid style={[gridRTch, rtFoot]}>
+        <Text>
+          Testing & Treatment stats are updated daily at 4EST and are originally
+          sourced from public health authorities at all levels. Data quality
+          fluctuates from state to state.
+        </Text>
+      </Grid>
     </Grid>
   {/if}
   {#if regionData}
@@ -603,38 +617,46 @@
     {/if}
     {#if country === 'US'}
       <Grid container gridgap={'0rem'} style={gridTesting}>
-      <Grid style={[gridRTch, rtHead]}>
-        <Heading as="h6" style={middleh6}>
-          {region} Testing & Treatment
-        </Heading>
+        <Grid style={[gridRTch, rtHead]}>
+          <Heading as="h6" style={middleh6}>
+            {region} Testing & Treatment
+          </Heading>
+        </Grid>
+        <Grid style={[gridRTch, rtMain1]}>
+          <Heading as="h6" style={gridh6}>Test Stats</Heading>
+          <Text style={gridTxt}>
+            <Text as="span" style={gridLabel}>positive:</Text>
+            {insertCommas(regTstPos)}
+            <br />
+            <Text as="span" style={gridLabel}>negative:</Text>
+            {insertCommas(regTstNeg)}
+            <br />
+            <Text as="span" style={gridLabel}>Pending:</Text>
+            {insertCommas(regTstPen)}
+          </Text>
+          <Text style={[gridTxt, gridBorderTop]}>
+            <Text as="span" style={gridLabel}>Administered (All-time):</Text>
+            {insertCommas(regTstTot)}
+          </Text>
+        </Grid>
+        <Grid style={[gridRTch, rtMain2]}>
+          <Heading as="h6" style={gridh6}>Currently</Heading>
+          <Text style={gridTxt}>
+            <Text as="span" style={gridLabel}>In hospital:</Text>
+            {insertCommas(regHspCur)}
+            <br />
+            <Text as="span" style={gridLabel}>In ICU:</Text>
+            {insertCommas(regIcuCur)}
+            <br />
+            <Text as="span" style={gridLabel}>On Ventilator:</Text>
+            {insertCommas(regVntCur)}
+          </Text>
+          <Text style={[gridTxt, gridBorderTop]}>
+            <Text as="span" style={gridLabel}>Hospitalized (All-time):</Text>
+            {insertCommas(regHspTot)}
+          </Text>
+        </Grid>
       </Grid>
-      <Grid style={[gridRTch, rtMain1]}>
-        <Heading as="h6" style={gridh6}>Test Stats</Heading>
-        <Text style={gridTxt}>
-          <Text as="span" style={gridLabel}>positive:</Text> {insertCommas(regTstPos)} 
-          <br />
-          <Text as="span" style={gridLabel}>negative:</Text> {insertCommas(regTstNeg)}
-          <br />
-          <Text as="span" style={gridLabel}>Pending:</Text> {insertCommas(regTstPen)}
-        </Text>
-        <Text style={[gridTxt, gridBorderTop]}>
-          <Text as="span" style={gridLabel}>Administered (All-time):</Text> {insertCommas(regTstTot)}
-        </Text>
-      </Grid>
-      <Grid style={[gridRTch, rtMain2]}>
-        <Heading as="h6" style={gridh6}>Currently</Heading>
-        <Text style={gridTxt}>
-          <Text as="span" style={gridLabel}>In hospital:</Text> {insertCommas(regHspCur)}
-          <br />
-          <Text as="span" style={gridLabel}>In ICU:</Text> {insertCommas(regIcuCur)}
-          <br />
-          <Text as="span" style={gridLabel}>On Ventilator:</Text> {insertCommas(regVntCur)}
-        </Text>
-        <Text style={[gridTxt, gridBorderTop]}>
-          <Text as="span" style={gridLabel}>Hospitalized (All-time):</Text> {insertCommas(regHspTot)}
-        </Text>
-      </Grid>
-    </Grid>
     {/if}
   {/if}
   {#if region === 'California'}
