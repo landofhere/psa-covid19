@@ -1,6 +1,12 @@
 <script>
   import { onMount } from 'svelte'
-  import { Flex, Box, Heading, Text } from '@studiobear/designspek-components'
+  import {
+    Grid,
+    Flex,
+    Box,
+    Heading,
+    Text,
+  } from '@studiobear/designspek-components'
   import { styled } from '@studiobear/designspek'
   import OverviewBoxLocalCounty from './OverviewBoxLocalCounty.svelte'
   import { insertCommas, capitalize, percentChange } from '../../libs'
@@ -72,6 +78,14 @@
   $: cntryFatalityRate = (cntryDeaths / cntryConfirmed) * 100 || 0
   $: cntryRecoveryRate = (cntryRecovered / cntryConfirmed) * 100 || 0
   $: cntryUpdated = overview.updated
+  $: cntryTstTot = 0
+  $: cntryTstPos = 0
+  $: cntryTstNeg = 0
+  $: cntryTstPen = 0
+  $: cntryHspTot = 0
+  $: cntryHspCur = 0
+  $: cntryIcuCur = 0
+  $: cntryVntCur = 0
 
   $: regActive =
     regionData.Confirmed - (regionData.Deaths + regionData.Recovered) || 0
@@ -92,6 +106,14 @@
   $: regActiveWeekChangePct = 0
   $: regConfirmedDayChangePct = 0
   $: regConfirmedWeekChangePct = 0
+  $: regTstTot = 0
+  $: regTstPos = 0
+  $: regTstNeg = 0
+  $: regTstPen = 0
+  $: regHspTot = 0
+  $: regHspCur = 0
+  $: regIcuCur = 0
+  $: regVntCur = 0
 
   $: overviewBox = {
     w: '100%',
@@ -267,54 +289,138 @@
     theme,
   )
 
+  let gridTesting = {
+    tempcols: '[first] 1fr [line2] 1fr [end]',
+    temprows: [
+      '[row1-start] auto [row1-end] auto [row2-end] auto [row-end]',
+      '[row1-start] auto [row1-end] auto [row2-end] auto [row-end]',
+      '[row1-start] auto [row1-end] auto [row-end]',
+    ],
+    gridareas: [
+      '"header header" "main1" "main2" "footer footer"',
+      '"header header" "main1 main2" "footer footer"',
+      '"header footer" "main1 main2"',
+    ],
+  }
+  let gridRTch = {
+    p: '0.25rem',
+  }
+
+  let rtHead = {
+    area: 'header',
+  }
+  $: rtMain1 = {
+    area: 'main1',
+    bg: theme.colors.lightBlue,
+  }
+  $: rtMain2 = {
+    area: 'main2',
+    bg: theme.colors.lightGreen,
+  }
+  let rtFoot = {
+    area: 'footer',
+  }
+  $: gridh6 = {
+    txtAlign: 'center',
+    color: theme.colors.quaternary,
+    fontWeight: 400,
+    txtTran: 'uppercase',
+    lineHeight: '1.2rem'
+  }
+  $: gridTxt = {
+    txtAlign: 'center',
+    color: theme.colors.text,
+    m: 0
+  }
+  $: gridTxtLg = {
+    txtAlign: 'center',
+    color: theme.colors.text,
+    m: 0
+  }
+
+  $: gridBorderTop = {
+    bt: '1px solid',
+    brdCol: theme.colors.quaternary
+  }
+  let gridLabel = {
+    fontSize: '0.8rem',
+    txtTran: 'uppercase'
+  }
+
+
   const API_URL = process.env.API_URL
   const API_CA_COUNTY_FILE = process.env.API_CA_COUNTY_FILE
   const US_STATES_URL = process.env.US_STATES_URL
+  const US_URL = process.env.US_URL
   const API_US_STATES_URL = `${API_URL}${US_STATES_URL}`
   const API_CA_COUNTY_URL = `${API_URL}${API_CA_COUNTY_FILE}`
 
   let dataChange = false
   onMount(async function getData() {
-    const USStates_CT = await fetch(API_US_STATES_URL)
-    const respCA = await fetch(`${API_CA_COUNTY_URL}${regLower}.json`)
-    let tempCT = await USStates_CT.json()
-    let tempCA = await respCA.json()
-    // console.log('V2 CA CNTY: ', tempCA, regionData)
-    console.log('US States CT: ', tempCT)
-    let regName = capitalize(tempCA.name)
-    if (regName === region) {
-      regConfirmed = tempCA.confirmed || 0
-      regDeaths = tempCA.deaths || 0
-      regRecovered = 0
-      regActive = regConfirmed - (regDeaths + regRecovered) || 0
-      regFatalityRate = (regDeaths / regConfirmed) * 100 || 0
-      regRecoveryRate = (regRecovered / regConfirmed) * 100 || 0
-      regConfirmedDayChange = tempCA.confirmedDayChange || 0
-      regConfirmedWeekChange = tempCA.confirmedWeekChange || 0
-      regConfirmedDayChangePct = Math.round(
-        percentChange(regConfirmedDayChange, regConfirmed),
-      )
-      regConfirmedWeekChangePct = Math.round(
-        percentChange(regConfirmedWeekChange, regConfirmed),
-      )
-      regDeathsDayChange = tempCA.deathsDayChange || 0
-      regDeathsWeekChange = tempCA.deathsWeekChange || 0
-      regDeathsDayChangePct = Math.round(
-        percentChange(regDeathsDayChange, regDeaths),
-      )
-      regDeathsWeekChangePct = Math.round(
-        percentChange(regDeathsWeekChange, regDeaths),
-      )
-      regActiveDayChange = regConfirmedDayChange - regDeathsDayChange
-      regActiveWeekChange = regConfirmedWeekChange - regDeathsWeekChange
-      regActiveDayChangePct = Math.round(
-        percentChange(regActiveDayChange, regActive),
-      )
-      regActiveWeekChangePct = Math.round(
-        percentChange(regActiveWeekChange, regActive),
-      )
-      updated = tempCA.updated || overview.updated || 'Unknown'
-      dataChange = true
+    if (country === 'US') {
+      const US_CT = await fetch(US_URL)
+      const USStates_CT = await fetch(API_US_STATES_URL)
+      const respCA = await fetch(`${API_CA_COUNTY_URL}${regLower}.json`)
+      let tempUS = await US_CT.json()
+      let tempCT = await USStates_CT.json()
+      let tempCA = await respCA.json()
+      // console.log('V2 CA CNTY: ', tempCA, regionData)
+      console.log('US States CT: ', tempUS[0], tempCT, tempCA)
+      let regName = capitalize(tempCA.name)
+      cntryTstTot = tempUS[0].totalTestResults
+      cntryTstPos = tempUS[0].positive
+      cntryTstNeg = tempUS[0].negative
+      cntryTstPen = tempUS[0].pending
+      cntryHspTot = tempUS[0].hospitalizedCumulative
+      cntryHspCur = tempUS[0].hospitalizedCurrently
+      cntryIcuCur = tempUS[0].inIcuCurrently
+      cntryVntCur = tempUS[0].onVentilatorCurrently
+      if (regName === region) {
+        regConfirmed = tempCA.confirmed || 0
+        regDeaths = tempCA.deaths || 0
+        regRecovered = 0
+        regActive = regConfirmed - (regDeaths + regRecovered) || 0
+        regFatalityRate = (regDeaths / regConfirmed) * 100 || 0
+        regRecoveryRate = (regRecovered / regConfirmed) * 100 || 0
+        regConfirmedDayChange = tempCA.confirmedDayChange || 0
+        regConfirmedWeekChange = tempCA.confirmedWeekChange || 0
+        regConfirmedDayChangePct = Math.round(
+          percentChange(regConfirmedDayChange, regConfirmed),
+        )
+        regConfirmedWeekChangePct = Math.round(
+          percentChange(regConfirmedWeekChange, regConfirmed),
+        )
+        regDeathsDayChange = tempCA.deathsDayChange || 0
+        regDeathsWeekChange = tempCA.deathsWeekChange || 0
+        regDeathsDayChangePct = Math.round(
+          percentChange(regDeathsDayChange, regDeaths),
+        )
+        regDeathsWeekChangePct = Math.round(
+          percentChange(regDeathsWeekChange, regDeaths),
+        )
+        regActiveDayChange = regConfirmedDayChange - regDeathsDayChange
+        regActiveWeekChange = regConfirmedWeekChange - regDeathsWeekChange
+        regActiveDayChangePct = Math.round(
+          percentChange(regActiveDayChange, regActive),
+        )
+        regActiveWeekChangePct = Math.round(
+          percentChange(regActiveWeekChange, regActive),
+        )
+        
+        const stateCTPos = tempCT.data.map(ctSt => ctSt.name).indexOf(regName)
+        const stateCTData = tempCT.data[stateCTPos]
+
+        regTstTot = stateCTData.confirmedTests || 0
+        regTstPos = stateCTData.positive || 0
+        regTstNeg = stateCTData.negative || 0
+        regTstPen = stateCTData.pending || 0
+        regHspTot = stateCTData.hospitalizedCum || 'N/A'
+        regHspCur = stateCTData.hospitalizedCur || 'N/A'
+        regIcuCur = stateCTData.icuCur || 'N/A'
+        regVntCur = stateCTData.ventCur || 'N/A'
+        updated = tempCA.updated || overview.updated || 'Unknown'
+        dataChange = true
+      }
     }
   })
 </script>
@@ -355,6 +461,42 @@
       <Heading as="h4" style={btmh4}>{cntryFatalityRate.toFixed(2)}%</Heading>
     </Box>
   </Flex>
+  {#if country === 'US'}
+    <Grid container gridgap={'0rem'} style={gridTesting}>
+      <Grid style={[gridRTch, rtHead]}>
+        <Heading as="h6" style={middleh6}>
+          {country} Testing & Treatment
+        </Heading>
+      </Grid>
+      <Grid style={[gridRTch, rtMain1]}>
+        <Heading as="h6" style={gridh6}>Test Stats</Heading>
+        <Text style={gridTxt}>
+          <Text as="span" style={gridLabel}>positive:</Text> {insertCommas(cntryTstPos)} 
+          <br />
+          <Text as="span" style={gridLabel}>negative:</Text> {insertCommas(cntryTstNeg)}
+          <br />
+          <Text as="span" style={gridLabel}>Pending:</Text> {insertCommas(cntryTstPen)}
+        </Text>
+        <Text style={[gridTxt, gridBorderTop]}>
+          <Text as="span" style={gridLabel}>Administered (All-time):</Text> {insertCommas(cntryTstTot)}
+        </Text>
+      </Grid>
+      <Grid style={[gridRTch, rtMain2]}>
+        <Heading as="h6" style={gridh6}>Currently</Heading>
+        <Text style={gridTxt}>
+          <Text as="span" style={gridLabel}>In hospital:</Text> {insertCommas(cntryHspCur)}
+          <br />
+          <Text as="span" style={gridLabel}>In ICU:</Text> {insertCommas(cntryIcuCur)}
+          <br />
+          <Text as="span" style={gridLabel}>On Ventilator:</Text> {insertCommas(cntryVntCur)}
+        </Text>
+        <Text style={[gridTxt, gridBorderTop]}>
+          <Text as="span" style={gridLabel}>Hospitalized (All-time):</Text> {insertCommas(cntryHspTot)}
+        </Text>
+      </Grid>
+      <Grid style={[gridRTch, rtFoot]}><Text>Testing & Treatment stats are updated daily at 4EST and are originally  sourced from public health authorities at all levels. Data quality fluctuates from state to state.</Text></Grid>
+    </Grid>
+  {/if}
   {#if regionData}
     {#if !dataChange}
       <Box style={overviewSingleBoxActive}>
@@ -458,6 +600,41 @@
           </Flex>
         </Flex>
       </Flex>
+    {/if}
+    {#if country === 'US'}
+      <Grid container gridgap={'0rem'} style={gridTesting}>
+      <Grid style={[gridRTch, rtHead]}>
+        <Heading as="h6" style={middleh6}>
+          {region} Testing & Treatment
+        </Heading>
+      </Grid>
+      <Grid style={[gridRTch, rtMain1]}>
+        <Heading as="h6" style={gridh6}>Test Stats</Heading>
+        <Text style={gridTxt}>
+          <Text as="span" style={gridLabel}>positive:</Text> {insertCommas(regTstPos)} 
+          <br />
+          <Text as="span" style={gridLabel}>negative:</Text> {insertCommas(regTstNeg)}
+          <br />
+          <Text as="span" style={gridLabel}>Pending:</Text> {insertCommas(regTstPen)}
+        </Text>
+        <Text style={[gridTxt, gridBorderTop]}>
+          <Text as="span" style={gridLabel}>Administered (All-time):</Text> {insertCommas(regTstTot)}
+        </Text>
+      </Grid>
+      <Grid style={[gridRTch, rtMain2]}>
+        <Heading as="h6" style={gridh6}>Currently</Heading>
+        <Text style={gridTxt}>
+          <Text as="span" style={gridLabel}>In hospital:</Text> {insertCommas(regHspCur)}
+          <br />
+          <Text as="span" style={gridLabel}>In ICU:</Text> {insertCommas(regIcuCur)}
+          <br />
+          <Text as="span" style={gridLabel}>On Ventilator:</Text> {insertCommas(regVntCur)}
+        </Text>
+        <Text style={[gridTxt, gridBorderTop]}>
+          <Text as="span" style={gridLabel}>Hospitalized (All-time):</Text> {insertCommas(regHspTot)}
+        </Text>
+      </Grid>
+    </Grid>
     {/if}
   {/if}
   {#if region === 'California'}
