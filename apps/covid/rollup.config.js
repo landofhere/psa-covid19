@@ -71,6 +71,9 @@ export default {
         'process.env.API_CA_COUNTY_FILE': JSON.stringify(
           process.env.API_CA_COUNTY_FILE,
         ),
+        'process.env.US_STATES_URL': JSON.stringify(
+          process.env.US_STATES_URL,
+        ),
       }),
       svg(),
       svelte({
@@ -150,6 +153,9 @@ export default {
         'process.env.API_CA_COUNTY_FILE': JSON.stringify(
           process.env.API_CA_COUNTY_FILE,
         ),
+        'process.env.US_STATES_URL': JSON.stringify(
+          process.env.US_STATES_URL,
+        ),
       }),
       svg(),
       svelte({
@@ -196,6 +202,9 @@ export default {
         'process.env.API_URL': JSON.stringify(process.env.API_URL),
         'process.env.API_CA_COUNTY_FILE': JSON.stringify(
           process.env.API_CA_COUNTY_FILE,
+        ),
+        'process.env.US_STATES_URL': JSON.stringify(
+          process.env.US_STATES_URL,
         ),
       }),
       commonjs(),

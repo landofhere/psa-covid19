@@ -1,4 +1,5 @@
 import { DefaultOpts, internalizeName, calcChangeCombinedSums } from './index'
+import { stateNames } from '../util'
 
 interface USStates {
   updated?: string
@@ -14,29 +15,75 @@ interface DataInUSStates {
   deaths: string
 }
 
-type CalcUSSates = (d: any, opts: DefaultOpts) => Promise<USStates>
+type CalcUSStates = (d: any, d2: any, opts: DefaultOpts) => Promise<USStates>
 
-type parseUSSates = (d: any, opts: DefaultOpts) => Promise<USStates>
+type parseUSStates = (d: any, d2: any, opts: DefaultOpts) => Promise<USStates>
 
 const defaultOpts: DefaultOpts = {
   numberfy: false,
   time: true,
 }
 
-export const parseUSStatesStats: parseUSSates = async (d, opts) => {
+export const parseUSStatesStats: parseUSStates = async (d, d2, opts) => {
   let combined: any = {
     startDate: '',
     lastDate: '',
   }
   await d.map((item: DataInUSStates, index: number) => {
     let combinedData = {}
+    let stateAbbrev: string = 'N/A'
+    let stateCTData  = {
+      totalTestResults: 0,
+      positive: 0,
+      negative: 0,
+      pending: 0,
+      hospitalizedCurrently: 0,
+      hospitalizedCumulative: 0,
+      inIcuCurrently: 0,
+      inIcuCumulative: 0,
+      onVentilatorCurrently: 0,
+      onVentilatorCumulative: 0,
+      recovered: 0,
+      deaths: 0,
+    }
+    const stateName = item.state
+
+    // Get State name abbreviation
+    const stateNamePos = stateNames.map((st:any) => st.name).indexOf(stateName);
+    stateAbbrev= stateNamePos !== -1 && stateNames[stateNamePos].hasOwnProperty('abbreviation') ? stateNames[stateNamePos].abbreviation : 'N/A'
+
+    // Get covidtracking.com data for that state
+    if(stateAbbrev){
+      const stateCTPos = d2.map((ctSt:any) => ctSt.state).indexOf(stateAbbrev);
+      stateCTData = d2[stateCTPos]
+    }
+    // console.log('stateCTData: ', stateCTData)
+    const stateConfirmed = stateCTData.totalTestResults > +item.cases ? stateCTData.totalTestResults : +item.cases
+    const stateDeaths = stateCTData.deaths > +item.deaths ? stateCTData : +item.deaths
+    const stateRecovered = stateCTData.recovered > 0 ? stateCTData.recovered : 0
+    const stateActive= stateConfirmed - (+stateDeaths + +stateRecovered)
+    // Defaults: Compare Data
     const itemData = {
+      abbrev: stateAbbrev,
       fips: item.fips,
-      confirmed: +item.cases,
-      active: +item.cases - +item.deaths,
-      deaths: +item.deaths,
+      confirmed: stateConfirmed,
+      active: stateActive,
+      recovered: stateRecovered,
+      deaths: stateDeaths,
       confirmedDayChange: 0,
       deathsDayChange: 0,
+      confirmedWeekChange: 0,
+      deathsWeekChange: 0,
+      confirmedTests: stateCTData.totalTestResults,
+      positive: stateCTData.positive,
+      negative: stateCTData.negative,
+      pending: stateCTData.pending,
+      hospitalizedCur: stateCTData.hospitalizedCurrently,
+      hospitalizedCum: stateCTData.hospitalizedCumulative,
+      icuCur: stateCTData.inIcuCurrently,
+      icuCum: stateCTData.inIcuCumulative,
+      ventCur: stateCTData.onVentilatorCurrently,
+      ventCum: stateCTData.onVentilatorCumulative,
     }
     const itemTime = {
       date: item.date,
@@ -78,7 +125,9 @@ export const procUSStates = async (d: any) => {
   const combined: any[] = []
   let confirmed = 0
   let deaths = 0
-
+  let active = 0
+  let recovered = 0
+  // console.log('procStates:', d)
   await d.map((item: any) => {
     let change = {}
     if (item.time.length > 0) {
@@ -90,27 +139,26 @@ export const procUSStates = async (d: any) => {
         { week: 7 },
       ])
 
-      const lastTime = item.time[0]
       const itemData = {
         name: item.name,
         fips: item.fips,
-        confirmed: lastTime.confirmed,
-        active: lastTime.confirmed - lastTime.deaths,
-        deaths: lastTime.deaths,
         change,
         time: revTime,
+        
       }
-      confirmed += lastTime.confirmed
-      deaths += lastTime.deaths
-      combined.push(itemData)
+      confirmed += item.confirmed
+      deaths += item.deaths
+      active += item.active
+      recovered += item.recovered
+      combined.push({...itemData, ...item})
     }
   })
   // console.log('proc:', combined)
-  return { confirmed, deaths, active: confirmed - deaths, data: combined }
+  return { confirmed, deaths, active, recovered, data: combined }
 }
 
-export const calcUSStates: CalcUSSates = async (d, opts) => {
-  const calcData = await parseUSStatesStats(d, {
+export const calcUSStates: CalcUSStates = async (d, d2,  opts) => {
+  const calcData = await parseUSStatesStats(d, d2, {
     ...defaultOpts,
     ...opts,
   })

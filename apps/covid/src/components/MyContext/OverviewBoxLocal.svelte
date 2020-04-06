@@ -269,13 +269,18 @@
 
   const API_URL = process.env.API_URL
   const API_CA_COUNTY_FILE = process.env.API_CA_COUNTY_FILE
+  const US_STATES_URL = process.env.US_STATES_URL
+  const API_US_STATES_URL = `${API_URL}${US_STATES_URL}`
   const API_CA_COUNTY_URL = `${API_URL}${API_CA_COUNTY_FILE}`
 
   let dataChange = false
   onMount(async function getData() {
+    const USStates_CT = await fetch(API_US_STATES_URL)
     const respCA = await fetch(`${API_CA_COUNTY_URL}${regLower}.json`)
+    let tempCT = await USStates_CT.json()
     let tempCA = await respCA.json()
     // console.log('V2 CA CNTY: ', tempCA, regionData)
+    console.log('US States CT: ', tempCT)
     let regName = capitalize(tempCA.name)
     if (regName === region) {
       regConfirmed = tempCA.confirmed || 0
