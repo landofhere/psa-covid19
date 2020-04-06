@@ -74,6 +74,9 @@ export default {
         'process.env.US_STATES_URL': JSON.stringify(
           process.env.US_STATES_URL,
         ),
+        'process.env.US_URL': JSON.stringify(
+          process.env.US_URL,
+        ),
       }),
       svg(),
       svelte({
@@ -156,6 +159,9 @@ export default {
         'process.env.US_STATES_URL': JSON.stringify(
           process.env.US_STATES_URL,
         ),
+        'process.env.US_URL': JSON.stringify(
+          process.env.US_URL,
+        ),
       }),
       svg(),
       svelte({
@@ -205,6 +211,9 @@ export default {
         ),
         'process.env.US_STATES_URL': JSON.stringify(
           process.env.US_STATES_URL,
+        ),
+        'process.env.US_URL': JSON.stringify(
+          process.env.US_URL,
         ),
       }),
       commonjs(),

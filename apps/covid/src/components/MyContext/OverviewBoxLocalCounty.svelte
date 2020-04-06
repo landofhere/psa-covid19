@@ -228,11 +228,15 @@
             <Box style={MiddleChange1}>
               <Heading as="h4" style={confirmh4}>
                 +{insertCommas(cntyConfirmedDay)}
-                <span class={spanh4}>(+{cntyConfirmedDayPct}%) Day</span>
+                <span class={spanh4}>
+                  (+{cntyConfirmedDayPct.toFixed(2)}%) Day
+                </span>
               </Heading>
               <Heading as="h4" style={confirmh4}>
                 +{insertCommas(cntyConfirmedWeek)}
-                <span class={spanh4}>(+{cntyConfirmedWeekPct}%) Week</span>
+                <span class={spanh4}>
+                  (+{cntyConfirmedWeekPct.toFixed(2)}%) Week
+                </span>
               </Heading>
             </Box>
           </Flex>
@@ -250,11 +254,15 @@
             <Box style={MiddleChange2}>
               <Heading as="h4" style={deathsh4}>
                 +{insertCommas(cntyDeathsDay)}
-                <span class={spanh4}>(+{cntyDeathsDayPct}%) Day</span>
+                <span class={spanh4}>
+                  (+{cntyDeathsDayPct.toFixed(2)}%) Day
+                </span>
               </Heading>
               <Heading as="h4" style={deathsh4}>
                 +{insertCommas(cntyDeathsWeek)}
-                <span class={spanh4}>(+{cntyDeathsWeekPct}%) Week</span>
+                <span class={spanh4}>
+                  (+{cntyDeathsWeekPct.toFixed(2)}%) Week
+                </span>
               </Heading>
             </Box>
           </Flex>
@@ -283,8 +291,7 @@
       </Flex>
       <Box style={overviewBottomBox}>
         <Text style={btmh6}>
-          {@html `Unfortunately, recoveries are not being tracked or are unavailable at this time at
-          the state and county level. This means we cannot track progress locally. Thus, the local goal is to keep <strong># of confirmed</strong> as low as possible.`}
+          {@html `Unfortunately, recoveries are not being tracked or are unavailable at this time for ${region} and ${cntyShort} county level. This means we cannot track progress locally. Thus, the local goal is to keep <strong># of confirmed</strong> as low as possible.`}
         </Text>
       </Box>
     </Flex>
