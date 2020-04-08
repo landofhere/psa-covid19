@@ -1,6 +1,12 @@
 <script>
   // import { onMount } from 'svelte'
-  import { Grid, Flex, Box, Heading, Text } from '@studiobear/designspek-components'
+  import {
+    Grid,
+    Flex,
+    Box,
+    Heading,
+    Text,
+  } from '@studiobear/designspek-components'
   import { insertCommas } from '../libs'
   import { Loading } from './shared'
   export let theme = $$props.theme || {}
@@ -38,7 +44,7 @@
       '"header header" "top" "middle" "bottom"',
       '"header header" "top top" "middle bottom"',
       '"header header" "top middle bottom"',
-    ]
+    ],
   }
   let overviewSingleBox = {
     flexdir: 'column',
@@ -143,7 +149,7 @@
 
 <Grid style={overviewBox} {ssr}>
   <Box style={overviewHeaderBox} {ssr}>
-      <Heading as="h6" style={ovTitle} {ssr}>Global Cases</Heading>
+    <Heading as="h6" style={ovTitle} {ssr}>Global Cases</Heading>
   </Box>
   <Flex style={overviewTopBox} {ssr}>
     <Box style={overviewSingleBoxActive} {ssr}>
@@ -154,7 +160,7 @@
         <Heading as="h6" style={h6} {ssr}>Active</Heading>
         <Heading as="h2" style={activeh2} {ssr}>{insertCommas(active)}</Heading>
       {/if}
-    </Box>    
+    </Box>
   </Flex>
   <Flex style={overviewMiddleBox} {ssr}>
     <Box style={overviewSingleBox} {ssr}>

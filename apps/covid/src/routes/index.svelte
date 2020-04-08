@@ -12,7 +12,14 @@
     CardBody,
   } from '@studiobear/designspek-components'
   import { theme } from '../theme'
-  import { Nav, SSR, OverviewBoxGlobal, Icon, MyContext, CareCards } from '../components'
+  import {
+    Nav,
+    SSR,
+    OverviewBoxGlobal,
+    Icon,
+    MyContext,
+    CareCards,
+  } from '../components'
 
   import { fatalityRate, recoveryRate, C19Stats } from '../libs'
 
