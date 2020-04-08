@@ -1,6 +1,6 @@
 <script>
   // import { onMount } from 'svelte'
-  import { Flex, Box, Heading, Text } from '@studiobear/designspek-components'
+  import { Grid, Flex, Box, Heading, Text } from '@studiobear/designspek-components'
   import { insertCommas } from '../libs'
   import { Loading } from './shared'
   export let theme = $$props.theme || {}
@@ -18,7 +18,6 @@
 
   $: overviewBox = {
     w: '100%',
-    flexdir: 'column',
     align: 'center',
     brd: ['none', 'none', '1px solid', '1px solid', '1px solid'],
     brdCol: [
@@ -29,6 +28,17 @@
       theme.colors.muted,
     ],
     mx: 'auto',
+    tempcols: '[first] 1fr [line2] 1fr [end]',
+    temprows: [
+      '[row1-start] auto [row1-end] auto [row2-end] auto [row-end]',
+      '[row1-start] auto [row1-end] auto [row2-end] auto [row-end]',
+      '[row1-start] auto [row1-end] auto [row2-end] auto [row-end]',
+    ],
+    gridareas: [
+      '"header header" "top" "middle" "bottom"',
+      '"header header" "top top" "middle bottom"',
+      '"header header" "top middle bottom"',
+    ]
   }
   let overviewSingleBox = {
     flexdir: 'column',
@@ -39,7 +49,25 @@
     flexdir: 'column',
     alignc: 'stretch',
   }
+  let overviewHeaderBox = {
+    area: 'header',
+    align: 'center',
+    w: '100%',
+    txtalign: 'center',
+    d: 'flex',
+    flexdir: 'column',
+    alignc: 'stretch',
+  }
+  let overviewTopBox = {
+    area: 'top',
+    flexdir: 'column',
+    width: '100%',
+    alignc: 'stretch',
+    justc: 'stretch',
+    pb: '1.5rem',
+  }
   let overviewMiddleBox = {
+    area: 'middle',
     flexdir: 'row',
     width: '100%',
     alignc: 'stretch',
@@ -52,8 +80,12 @@
   }
 
   $: overviewBottomBox = {
-    ...overviewMiddleBox,
+    area: 'bottom',
     bg: theme.colors.grey,
+    flexdir: 'row',
+    width: '100%',
+    alignc: 'stretch',
+    pb: '1.5rem',
   }
   $: ovTitle = {
     letterSpacing: '0.25rem',
@@ -109,19 +141,21 @@
   }
 </script>
 
-<Flex style={overviewBox} {ssr}>
-  <Box style={overviewSingleBox} {ssr}>
-    <Heading as="h6" style={ovTitle} {ssr}>Global Cases</Heading>
+<Grid style={overviewBox} {ssr}>
+  <Box style={overviewHeaderBox} {ssr}>
+      <Heading as="h6" style={ovTitle} {ssr}>Global Cases</Heading>
   </Box>
-  <Box style={overviewSingleBoxActive} {ssr}>
-    {#if active === 0}
-      <Loading {theme} fill={theme.colors.primary} style={loading} {ssr} />
-      <Heading as="h6" style={loadingh6} {ssr}>Loading...</Heading>
-    {:else}
-      <Heading as="h6" style={h6} {ssr}>Active</Heading>
-      <Heading as="h2" style={activeh2} {ssr}>{insertCommas(active)}</Heading>
-    {/if}
-  </Box>
+  <Flex style={overviewTopBox} {ssr}>
+    <Box style={overviewSingleBoxActive} {ssr}>
+      {#if active === 0}
+        <Loading {theme} fill={theme.colors.primary} style={loading} {ssr} />
+        <Heading as="h6" style={loadingh6} {ssr}>Loading...</Heading>
+      {:else}
+        <Heading as="h6" style={h6} {ssr}>Active</Heading>
+        <Heading as="h2" style={activeh2} {ssr}>{insertCommas(active)}</Heading>
+      {/if}
+    </Box>    
+  </Flex>
   <Flex style={overviewMiddleBox} {ssr}>
     <Box style={overviewSingleBox} {ssr}>
       <Heading as="h6" style={middleh6} {ssr}>Recoveries</Heading>
@@ -153,4 +187,4 @@
     </Box>
   </Flex>
   <Text style={ovUpdated} {ssr}>Last updated: {updated}</Text>
-</Flex>
+</Grid>
