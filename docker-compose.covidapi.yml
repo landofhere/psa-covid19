@@ -2,6 +2,7 @@ version: '3'
 services:
   generate:
     image: covid-api_generate:${COMMIT}
+    init: true
     build:
       context: .
       dockerfile: ./Dockerfile.CovidAPI
