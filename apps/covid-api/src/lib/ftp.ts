@@ -8,7 +8,7 @@ const ftp = new FTPS({
   port: +process.env.FTP_PORT,
   protocol: 'sftp',
   retries: 3,
-  timeout: 20,
+  timeout: 90,
   retryInterval: 5,
   autoConfirm: true,
   cwd: './public',
