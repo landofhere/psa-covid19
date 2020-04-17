@@ -56,6 +56,8 @@ export const parseUSCACountyIndv = async (data: any) =>
   calcC19CACountyStatsV2(data, 'CALIFORNIA', { numberfy: true, time: true })
     .then(async resp => {
       const tmpData = resp.data ? resp.data : null
+      const date = new Date()
+      const dateStr = date.toLocaleString()
       if (tmpData.length > 0) {
         tmpData.map((c: CountyData) => {
           const cntyName = c.name
@@ -63,9 +65,10 @@ export const parseUSCACountyIndv = async (data: any) =>
           const cntyUrl = cntyNameShort
             .replace(/[\. ,\/\\]+/g, '-')
             .toLowerCase()
+
           const countyData = {
             name: cntyNameShort,
-            updated: resp.updated,
+            updated: dateStr,
             ...c,
           }
           const filePath = `./public/covid19_US_CA_County_${cntyUrl}.json`

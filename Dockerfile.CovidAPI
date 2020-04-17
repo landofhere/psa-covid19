@@ -23,6 +23,7 @@ RUN yarn workspace covid-api build
 
 RUN apk update
 RUN apk add lftp git
+RUN apk add openssh
 
 RUN yarn submod:init
 RUN yarn submod:update
